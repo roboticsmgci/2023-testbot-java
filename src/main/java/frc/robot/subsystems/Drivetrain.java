@@ -18,7 +18,7 @@ public class Drivetrain extends SubsystemBase {
     private DifferentialDrive m_robotDrive = new DifferentialDrive(m_leftLeadMotor, m_rightLeadMotor);
 
     // Gyro
-    AHRS m_navX = new AHRS(SPI.Port.kMXP);
+    public AHRS m_navX = new AHRS(SPI.Port.kMXP);
 
     public Drivetrain() {
 
