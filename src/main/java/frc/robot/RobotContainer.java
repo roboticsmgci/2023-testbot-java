@@ -27,14 +27,14 @@ public class RobotContainer {
     private final CommandXboxController m_driverController =
         new CommandXboxController(OperatorConstants.kDriverControllerPort);*/
 
-    private Joystick m_stick1 = new Joystick(0);
-    // private Joystick m_stick2 = new Joystick(1);
-
-    private Drivetrain m_drivetrain;
+    
     // Propeller m_propeller;
 
-    private Autonomous m_autonomousCommand = new Autonomous(m_drivetrain);
+    private final Drivetrain m_drivetrain = new Drivetrain();
 
+    private final Command m_autonomousCommand = new Autonomous(m_drivetrain);
+
+    Joystick m_stick1 = new Joystick(0);
     private double speed = 0;
 
     /** The container for the robot. Contains subsystems, OI devices, and commands. */
