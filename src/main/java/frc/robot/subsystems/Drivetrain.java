@@ -5,6 +5,7 @@ import com.revrobotics.CANSparkMax;
 
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class Drivetrain extends SubsystemBase {
@@ -41,16 +42,16 @@ public class Drivetrain extends SubsystemBase {
     }
 
     public void drive(double left, double right) {
-
+        m_robotDrive.tankDrive(left, right);
     }
 
     public void log() {
-
+        SmartDashboard.putNumber("Gyro", m_navX.getYaw());
     }
 
     @Override
     public void periodic() {
-
+        log();
     }
 
 }
