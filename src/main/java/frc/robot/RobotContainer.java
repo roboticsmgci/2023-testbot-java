@@ -45,39 +45,10 @@ public class RobotContainer {
         m_drivetrain.setDefaultCommand(
             new TankDrive(
                 () -> {
-                    return (
-                        (
-                            (m_stick1.getY()
-                                * (
-                                    1 - 0.75 * Math.abs(
-                                        m_stick1.getZ()
-                                            * (m_stick1.getRawButton(1) ? 0 : 1)
-                                    )
-                                )
-                            + m_stick1.getZ()
-                                * 0.75
-                                * (m_stick1.getRawButton(1) ? 0 : 1)
-                            )
-                        ) * ((-m_stick1.getThrottle() + 2) / 3)
-                    );
+                    return getLeftSpeed();
                 },
                 () -> {
-                    return (
-                        (
-                            (
-                                m_stick1.getY()
-                                    * (
-                                        1 - 0.75 * Math.abs(
-                                            m_stick1.getZ()
-                                                * (m_stick1.getRawButton(1) ? 0 : 1)
-                                        )
-                                    )
-                                - m_stick1.getZ()
-                                    * 0.75
-                                    * (m_stick1.getRawButton(1) ? 0 : 1)
-                            )
-                        ) * ((-m_stick1.getThrottle() + 2) / 3)
-                    );
+                    return getRightSpeed();
                 },
                 m_drivetrain
             )
@@ -92,6 +63,33 @@ public class RobotContainer {
         // if (m_stick2.GetRawButton(5)){
         //     speed -= 0.01;
         // }
+    }
+
+    public double getLeftSpeed() {
+        double thrust = m_stick1.getY(); // forward-back
+        double twist;
+        if (m_stick1.getRawButton(1)) {
+            twist = 0;
+        } else {
+            twist = m_stick1.getZ(); // twist
+        }
+        double throttle = (-m_stick1.getThrottle() + 2) / 3; // throttle
+
+        return (thrust * (1 - 0.75 * Math.abs(twist)) + twist * 0.75) * throttle;
+        
+    }
+
+    public double getRightSpeed() {
+        double thrust = m_stick1.getY(); // forward-back
+        double twist;
+        if (m_stick1.getRawButton(1)) {
+            twist = 0;
+        } else {
+            twist = m_stick1.getZ(); // twist
+        }
+        double throttle = (-m_stick1.getThrottle() + 2) / 3; // throttle
+
+        return (thrust * (1 - 0.75 * Math.abs(twist)) - twist * 0.75) * throttle;
     }
 
     /**
