@@ -36,7 +36,6 @@ public class RobotContainer {
     private final Command m_autonomousCommand = new Autonomous(m_drivetrain);
 
     Joystick m_stick1 = new Joystick(0);
-    private double speed = 0;
 
     /** The container for the robot. Contains subsystems, OI devices, and commands. */
     public RobotContainer() {

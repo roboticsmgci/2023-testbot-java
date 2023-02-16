@@ -22,7 +22,7 @@ public class GyroDrive extends CommandBase {
     // Called repeatedly when this Command is scheduled to run
     @Override
     public void execute() {
-        double radius = Math.sqrt(m_x*m_x+m_y*m_y);
+        //double radius = Math.sqrt(m_x*m_x+m_y*m_y);
         double angle = 0;
         if(m_x>0 && m_y>0){
             angle = Math.atan(m_y/m_x);
