@@ -41,10 +41,19 @@ public class Drivetrain extends SubsystemBase {
 
     }
 
+    /**
+     * Drives the robot with the given speed for each side.
+     * 
+     * @param left The speed of the left side.
+     * @param right The speed of the right speed.
+     */
     public void drive(double left, double right) {
         m_robotDrive.tankDrive(left, right);
     }
 
+    /**
+     * Logs information to the SmartDashboard.
+     */
     public void log() {
         SmartDashboard.putNumber("Gyro", m_navX.getYaw());
     }

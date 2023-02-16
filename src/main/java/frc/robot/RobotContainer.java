@@ -40,7 +40,6 @@ public class RobotContainer {
     /** The container for the robot. Contains subsystems, OI devices, and commands. */
     public RobotContainer() {
         // Initialize all of your commands and subsystems here
-        // ((-m_stick2.getThrottle() + 2) / 3)
 
         m_drivetrain.setDefaultCommand(
             new TankDrive(
@@ -56,15 +55,12 @@ public class RobotContainer {
 
         // Configure the trigger bindings
         configureBindings();
-        
-        // if (m_stick2.GetRawButton(3)){
-        //     speed += 0.01;
-        // }
-        // if (m_stick2.GetRawButton(5)){
-        //     speed -= 0.01;
-        // }
     }
 
+    /**
+     * Gets the current speed of the left side of the robot.
+     * @return the left speed
+     */
     public double getLeftSpeed() {
         double thrust = m_stick1.getY(); // forward-back
         double twist;
@@ -76,9 +72,12 @@ public class RobotContainer {
         double throttle = (-m_stick1.getThrottle() + 2) / 3; // throttle
 
         return (thrust * (1 - 0.75 * Math.abs(twist)) + twist * 0.75) * throttle;
-        
     }
 
+    /**
+     * Gets the current speed of the right side of the robot.
+     * @return the right speed
+     */
     public double getRightSpeed() {
         double thrust = m_stick1.getY(); // forward-back
         double twist;
