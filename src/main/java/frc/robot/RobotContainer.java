@@ -4,6 +4,7 @@
 
 package frc.robot;
 
+import frc.robot.Constants.DriveConstants;
 import frc.robot.commands.Autonomous;
 import frc.robot.commands.TankDrive;
 import frc.robot.subsystems.Drivetrain;
@@ -64,14 +65,15 @@ public class RobotContainer {
     public double getLeftSpeed() {
         double thrust = m_stick1.getY(); // forward-back
         double twist;
-        if (m_stick1.getRawButton(1)) {
+        if (m_stick1.getRawButton(DriveConstants.kStraightButton)) {
             twist = 0;
         } else {
             twist = m_stick1.getZ(); // twist
         }
         double throttle = (-m_stick1.getThrottle() + 2) / 3; // throttle
 
-        return (thrust * (1 - 0.75 * Math.abs(twist)) + twist * 0.75) * throttle;
+        return (thrust * (1 - DriveConstants.kTwistMultiplier * Math.abs(twist))
+              + twist * DriveConstants.kTwistMultiplier) * throttle;
     }
 
     /**
@@ -81,14 +83,15 @@ public class RobotContainer {
     public double getRightSpeed() {
         double thrust = m_stick1.getY(); // forward-back
         double twist;
-        if (m_stick1.getRawButton(1)) {
+        if (m_stick1.getRawButton(DriveConstants.kStraightButton)) {
             twist = 0;
         } else {
             twist = m_stick1.getZ(); // twist
         }
         double throttle = (-m_stick1.getThrottle() + 2) / 3; // throttle
 
-        return (thrust * (1 - 0.75 * Math.abs(twist)) - twist * 0.75) * throttle;
+        return (thrust * (1 - DriveConstants.kTwistMultiplier * Math.abs(twist))
+              - twist * DriveConstants.kTwistMultiplier) * throttle;
     }
 
     /**

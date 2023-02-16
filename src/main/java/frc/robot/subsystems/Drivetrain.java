@@ -2,19 +2,20 @@ package frc.robot.subsystems;
 
 import com.kauailabs.navx.frc.AHRS;
 import com.revrobotics.CANSparkMax;
+import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants.DriveConstants;
 
 public class Drivetrain extends SubsystemBase {
-    
-    private static final int leftLeadDeviceID = 2, leftFollowDeviceID = 4, rightLeadDeviceID = 3, rightFollowDeviceID = 1;
-    private CANSparkMax m_leftLeadMotor = new CANSparkMax(leftLeadDeviceID, CANSparkMax.MotorType.kBrushed);
-    private CANSparkMax m_rightLeadMotor = new CANSparkMax(rightLeadDeviceID, CANSparkMax.MotorType.kBrushed);
-    private CANSparkMax m_leftFollowMotor = new CANSparkMax(leftFollowDeviceID, CANSparkMax.MotorType.kBrushed);
-    private CANSparkMax m_rightFollowMotor = new CANSparkMax(rightFollowDeviceID, CANSparkMax.MotorType.kBrushed);
+
+    private CANSparkMax m_leftLeadMotor = new CANSparkMax(DriveConstants.kLeftLeadDeviceID, MotorType.kBrushed);
+    private CANSparkMax m_rightLeadMotor = new CANSparkMax(DriveConstants.kRightLeadDeviceID, MotorType.kBrushed);
+    private CANSparkMax m_leftFollowMotor = new CANSparkMax(DriveConstants.kLeftFollowDeviceID, MotorType.kBrushed);
+    private CANSparkMax m_rightFollowMotor = new CANSparkMax(DriveConstants.kRightFollowDeviceID, MotorType.kBrushed);
 
     private DifferentialDrive m_robotDrive = new DifferentialDrive(m_leftLeadMotor, m_rightLeadMotor);
 
