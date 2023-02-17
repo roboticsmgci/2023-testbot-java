@@ -6,9 +6,9 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.Drivetrain;
 
 public class TankDrive extends CommandBase {
-    private Supplier<Double> m_left;
-    private Supplier<Double> m_right;
-    private Drivetrain m_drivetrain;
+    private final Supplier<Double> m_left;
+    private final Supplier<Double> m_right;
+    private final Drivetrain m_drivetrain;
 
     public TankDrive(Supplier<Double> left, Supplier<Double> right, Drivetrain drivetrain) {
         m_left = left;

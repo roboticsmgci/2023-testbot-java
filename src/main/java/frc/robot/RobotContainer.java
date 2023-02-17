@@ -39,7 +39,8 @@ public class RobotContainer {
 
     /** The container for the robot. Contains subsystems, OI devices, and commands. */
     public RobotContainer() {
-        // Initialize all of your commands and subsystems here
+        // Configure the trigger bindings
+        configureBindings();
 
         m_drivetrain.setDefaultCommand(
             new TankDrive(
@@ -52,9 +53,6 @@ public class RobotContainer {
                 m_drivetrain
             )
         );
-
-        // Configure the trigger bindings
-        configureBindings();
     }
 
     /**
