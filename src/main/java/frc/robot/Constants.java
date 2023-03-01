@@ -22,5 +22,6 @@ public final class Constants {
         public static final double kTwistMultiplier = 0.75;
 
         public static final int kStraightButton = 1;
+        public static final int kTurnButton = 2;
     }
 }

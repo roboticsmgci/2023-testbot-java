@@ -7,10 +7,12 @@ package frc.robot;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.commands.Autonomous;
 import frc.robot.commands.TankDrive;
+import frc.robot.commands.Turn;
 import frc.robot.subsystems.Drivetrain;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 
 /**
@@ -104,6 +106,7 @@ public class RobotContainer {
         // frc2::JoystickButton(&m_stick2,2).WhenHeld(
         //     SpinPropeller(m_propeller)
         // );
+        new JoystickButton(m_stick1, DriveConstants.kTurnButton).onTrue(new Turn(90, m_drivetrain));
     }
 
     /**
