@@ -31,28 +31,33 @@ public class Drive2 extends CommandBase {
         double y = m_joystick.getY();
 
         double angle = Math.toDegrees(Math.atan(y/x));
-        if(x<0){
+
+        if(x==0 && y == 0){
+          angle = 90;
+        }
+        if(tx<0){
             angle += 180;
         }
         angle-=90;
+        angle*=-1;
         if(angle>180){
             angle-=360;
+        }else if(angle<-180){
+            angle+=360;
         }
-        angle*=-1;
-        
-        double heading = m_drivetrain.m_navX.getAngle();
-        if(heading>180){
-            heading-=360;
+       
+        double heading = (m_drivetrain.m_navX.getAngle() % 360.0);
+        if(heading > 180){
+            heading -= 360;
         }
 
         double error = kP*(heading-angle);
         double speed = 0.5*Math.sqrt(x*x+y*y);
         if(Math.abs(error)>0.5){
-            m_drivetrain.drive(-speed, speed);
+            m_drivetrain.drive(-speed*error, speed*error);
         }else{
             m_drivetrain.drive(speed*(1-error), speed*(1+error));
         }
-        
     }
 
     @Override
