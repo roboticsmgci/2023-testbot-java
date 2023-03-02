@@ -25,7 +25,7 @@ public class DriveBack extends CommandBase {
     @Override
     public void execute() {
         if (durationCounter < 150){
-            m_drivetrain.drive(0.5, 0.5);
+            m_drivetrain.drive(-0.5, -0.5);
             durationCounter++;
         }
     }
@@ -33,7 +33,11 @@ public class DriveBack extends CommandBase {
     // Make this return true when this Command no longer needs to run execute()
     @Override
     public boolean isFinished() {
+        if(durationCounter > 150){
+            return true;
+        }else{
         return false;
+        }
     }
 
     // Called once after isFinished returns true

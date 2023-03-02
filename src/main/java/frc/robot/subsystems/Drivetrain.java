@@ -11,6 +11,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.DriveConstants;
 
 public class Drivetrain extends SubsystemBase {
+    public double angle = 0;
 
     private final CANSparkMax m_leftLeadMotor = new CANSparkMax(DriveConstants.kLeftLeadDeviceID,
                                                                 MotorType.kBrushed);
@@ -61,6 +62,7 @@ public class Drivetrain extends SubsystemBase {
      */
     public void log() {
         SmartDashboard.putNumber("Gyro", m_navX.getYaw());
+        SmartDashboard.putNumber("target", angle);
     }
 
     @Override
