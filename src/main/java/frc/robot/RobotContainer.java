@@ -108,7 +108,7 @@ public class RobotContainer {
         // frc2::JoystickButton(&m_stick2,2).WhenHeld(
         //     SpinPropeller(m_propeller)
         // );
-        new JoystickButton(m_stick1, DriveConstants.kTurnButton).onTrue(new Turn(90, m_drivetrain));
+        new JoystickButton(m_stick1, DriveConstants.kTurnButton).onTrue(new Turn(90, m_drivetrain).withTimeout(2));
     }
 
     /**
