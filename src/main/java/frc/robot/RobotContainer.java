@@ -5,12 +5,15 @@
 package frc.robot;
 
 import frc.robot.Constants.DriveConstants;
+import frc.robot.commands.Auto2;
 import frc.robot.commands.Autonomous;
 import frc.robot.commands.TankDrive;
 import frc.robot.commands.Drive2;
 import frc.robot.commands.Turn;
 import frc.robot.subsystems.Drivetrain;
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
@@ -36,26 +39,31 @@ public class RobotContainer {
 
     private final Drivetrain m_drivetrain = new Drivetrain();
 
-    private final Command m_autonomousCommand = new Autonomous(m_drivetrain);
-
     Joystick m_stick1 = new Joystick(0);
+
+    private final SendableChooser<Command> m_chooser = new SendableChooser<>();    
 
     /** The container for the robot. Contains subsystems, OI devices, and commands. */
     public RobotContainer() {
         // Configure the trigger bindings
         configureBindings();
 
+        m_chooser.setDefaultOption("Auto1", new Autonomous(m_drivetrain));
+        m_chooser.addOption("Auto2", new Auto2(m_drivetrain));
+        
+        SmartDashboard.putData(m_chooser);
+
         m_drivetrain.setDefaultCommand(
-            //new Drive2(m_stick1, m_drivetrain)
-            new TankDrive(
-                () -> {
-                    return getLeftSpeed();
-                },
-                () -> {
-                    return getRightSpeed();
-                },
-                m_drivetrain
-            )
+            new Drive2(m_stick1, m_drivetrain)
+            // new TankDrive(
+            //     () -> {
+            //         return getLeftSpeed();
+            //     },
+            //     () -> {
+            //         return getRightSpeed();
+            //     },
+            //     m_drivetrain
+            // )
         );
     }
 
@@ -118,6 +126,6 @@ public class RobotContainer {
      */
     public Command getAutonomousCommand() {
         // An example command will be run in autonomous
-        return m_autonomousCommand;
+        return m_chooser.getSelected();
     }
 }
