@@ -2,6 +2,7 @@ package frc.robot.subsystems;
 
 import com.kauailabs.navx.frc.AHRS;
 import com.revrobotics.CANSparkMax;
+import com.revrobotics.RelativeEncoder;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj.SPI;
@@ -27,6 +28,10 @@ public class Drivetrain extends SubsystemBase {
     // Gyro
     public AHRS m_navX = new AHRS(SPI.Port.kMXP);
 
+    // Encoders
+    public RelativeEncoder m_leftLeadEncoder = m_leftLeadMotor.getEncoder();
+    public RelativeEncoder m_rightLeadEncoder = m_rightLeadMotor.getEncoder();
+
     public Drivetrain() {
 
         // Restores factory defaults, does not persist
@@ -42,6 +47,10 @@ public class Drivetrain extends SubsystemBase {
         // Configures the motors to follow each other
         m_leftFollowMotor.follow(m_leftLeadMotor);
         m_rightFollowMotor.follow(m_rightLeadMotor);
+
+        // Set conversion ratios
+        m_leftLeadEncoder.setPositionConversionFactor(0.0443);
+        m_rightLeadEncoder.setPositionConversionFactor(0.0443);
 
         setName("Drivetrain");
 
