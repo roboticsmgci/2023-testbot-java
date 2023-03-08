@@ -2,24 +2,35 @@ package frc.robot.subsystems;
 
 import com.kauailabs.navx.frc.AHRS;
 import com.revrobotics.CANSparkMax;
+import com.revrobotics.RelativeEncoder;
+import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants.DriveConstants;
 
 public class Drivetrain extends SubsystemBase {
-    
-    private static final int leftLeadDeviceID = 2, leftFollowDeviceID = 4, rightLeadDeviceID = 3, rightFollowDeviceID = 1;
-    private CANSparkMax m_leftLeadMotor = new CANSparkMax(leftLeadDeviceID, CANSparkMax.MotorType.kBrushed);
-    private CANSparkMax m_rightLeadMotor = new CANSparkMax(rightLeadDeviceID, CANSparkMax.MotorType.kBrushed);
-    private CANSparkMax m_leftFollowMotor = new CANSparkMax(leftFollowDeviceID, CANSparkMax.MotorType.kBrushed);
-    private CANSparkMax m_rightFollowMotor = new CANSparkMax(rightFollowDeviceID, CANSparkMax.MotorType.kBrushed);
+    public double angle = 0;
 
-    private DifferentialDrive m_robotDrive = new DifferentialDrive(m_leftLeadMotor, m_rightLeadMotor);
+    private final CANSparkMax m_leftLeadMotor = new CANSparkMax(DriveConstants.kLeftLeadDeviceID,
+                                                                MotorType.kBrushed);
+    private final CANSparkMax m_rightLeadMotor = new CANSparkMax(DriveConstants.kRightLeadDeviceID,
+                                                                 MotorType.kBrushed);
+    private final CANSparkMax m_leftFollowMotor = new CANSparkMax(DriveConstants.kLeftFollowDeviceID,
+                                                                  MotorType.kBrushed);
+    private final CANSparkMax m_rightFollowMotor = new CANSparkMax(DriveConstants.kRightFollowDeviceID,
+                                                                   MotorType.kBrushed);
+
+    private final DifferentialDrive m_robotDrive = new DifferentialDrive(m_leftLeadMotor, m_rightLeadMotor);
 
     // Gyro
     public AHRS m_navX = new AHRS(SPI.Port.kMXP);
+
+    // Encoders
+    public RelativeEncoder m_leftLeadEncoder = m_leftLeadMotor.getEncoder();
+    public RelativeEncoder m_rightLeadEncoder = m_rightLeadMotor.getEncoder();
 
     public Drivetrain() {
 
@@ -37,16 +48,30 @@ public class Drivetrain extends SubsystemBase {
         m_leftFollowMotor.follow(m_leftLeadMotor);
         m_rightFollowMotor.follow(m_rightLeadMotor);
 
+        // Set conversion ratios
+        m_leftLeadEncoder.setPositionConversionFactor(0.0443);
+        m_rightLeadEncoder.setPositionConversionFactor(0.0443);
+
         setName("Drivetrain");
 
     }
 
+    /**
+     * Drives the robot with the given speed for each side.
+     * 
+     * @param left The speed of the left side.
+     * @param right The speed of the right speed.
+     */
     public void drive(double left, double right) {
         m_robotDrive.tankDrive(left, right);
     }
 
+    /**
+     * Logs information to the SmartDashboard.
+     */
     public void log() {
         SmartDashboard.putNumber("Gyro", m_navX.getYaw());
+        SmartDashboard.putNumber("target", angle);
     }
 
     @Override

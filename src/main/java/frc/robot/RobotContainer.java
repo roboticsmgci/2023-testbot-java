@@ -4,12 +4,19 @@
 
 package frc.robot;
 
+import frc.robot.Constants.DriveConstants;
+import frc.robot.commands.Auto2;
 import frc.robot.commands.Autonomous;
 import frc.robot.commands.TankDrive;
+import frc.robot.commands.Drive2;
+import frc.robot.commands.Turn;
 import frc.robot.subsystems.Drivetrain;
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 
 /**
@@ -32,66 +39,68 @@ public class RobotContainer {
 
     private final Drivetrain m_drivetrain = new Drivetrain();
 
-    private final Command m_autonomousCommand = new Autonomous(m_drivetrain);
-
     Joystick m_stick1 = new Joystick(0);
-    private double speed = 0;
+
+    private final SendableChooser<Command> m_chooser = new SendableChooser<>();    
 
     /** The container for the robot. Contains subsystems, OI devices, and commands. */
     public RobotContainer() {
-        // Initialize all of your commands and subsystems here
-        // ((-m_stick2.getThrottle() + 2) / 3)
-
-        m_drivetrain.setDefaultCommand(
-            new TankDrive(
-                () -> {
-                    return (
-                        (
-                            (m_stick1.getY()
-                                * (
-                                    1 - 0.75 * Math.abs(
-                                        m_stick1.getZ()
-                                            * (m_stick1.getRawButton(1) ? 0 : 1)
-                                    )
-                                )
-                            + m_stick1.getZ()
-                                * 0.75
-                                * (m_stick1.getRawButton(1) ? 0 : 1)
-                            )
-                        ) * ((-m_stick1.getThrottle() + 2) / 3)
-                    );
-                },
-                () -> {
-                    return (
-                        (
-                            (
-                                m_stick1.getY()
-                                    * (
-                                        1 - 0.75 * Math.abs(
-                                            m_stick1.getZ()
-                                                * (m_stick1.getRawButton(1) ? 0 : 1)
-                                        )
-                                    )
-                                - m_stick1.getZ()
-                                    * 0.75
-                                    * (m_stick1.getRawButton(1) ? 0 : 1)
-                            )
-                        ) * ((-m_stick1.getThrottle() + 2) / 3)
-                    );
-                },
-                m_drivetrain
-            )
-        );
-
         // Configure the trigger bindings
         configureBindings();
+
+        m_chooser.setDefaultOption("Auto1", new Autonomous(m_drivetrain));
+        m_chooser.addOption("Auto2", new Auto2(m_drivetrain));
         
-        // if (m_stick2.GetRawButton(3)){
-        //     speed += 0.01;
-        // }
-        // if (m_stick2.GetRawButton(5)){
-        //     speed -= 0.01;
-        // }
+        SmartDashboard.putData(m_chooser);
+
+        m_drivetrain.setDefaultCommand(
+            new Drive2(m_stick1, m_drivetrain)
+            // new TankDrive(
+            //     () -> {
+            //         return getLeftSpeed();
+            //     },
+            //     () -> {
+            //         return getRightSpeed();
+            //     },
+            //     m_drivetrain
+            // )
+        );
+    }
+
+    /**
+     * Gets the current speed of the left side of the robot.
+     * @return the left speed
+     */
+    public double getLeftSpeed() {
+        double thrust = m_stick1.getY(); // forward-back
+        double twist;
+        if (m_stick1.getRawButton(DriveConstants.kStraightButton)) {
+            twist = 0;
+        } else {
+            twist = m_stick1.getZ(); // twist
+        }
+        double throttle = (-m_stick1.getThrottle() + 2) / 3; // throttle
+
+        return (thrust * (1 - DriveConstants.kTwistMultiplier * Math.abs(twist))
+              + twist * DriveConstants.kTwistMultiplier) * throttle;
+    }
+
+    /**
+     * Gets the current speed of the right side of the robot.
+     * @return the right speed
+     */
+    public double getRightSpeed() {
+        double thrust = m_stick1.getY(); // forward-back
+        double twist;
+        if (m_stick1.getRawButton(DriveConstants.kStraightButton)) {
+            twist = 0;
+        } else {
+            twist = m_stick1.getZ(); // twist
+        }
+        double throttle = (-m_stick1.getThrottle() + 2) / 3; // throttle
+
+        return (thrust * (1 - DriveConstants.kTwistMultiplier * Math.abs(twist))
+              - twist * DriveConstants.kTwistMultiplier) * throttle;
     }
 
     /**
@@ -107,6 +116,7 @@ public class RobotContainer {
         // frc2::JoystickButton(&m_stick2,2).WhenHeld(
         //     SpinPropeller(m_propeller)
         // );
+        new JoystickButton(m_stick1, DriveConstants.kTurnButton).onTrue(new Turn(90, m_drivetrain).withTimeout(2));
     }
 
     /**
@@ -116,6 +126,6 @@ public class RobotContainer {
      */
     public Command getAutonomousCommand() {
         // An example command will be run in autonomous
-        return m_autonomousCommand;
+        return m_chooser.getSelected();
     }
 }
