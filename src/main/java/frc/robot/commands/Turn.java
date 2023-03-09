@@ -5,18 +5,15 @@ import frc.robot.subsystems.Drivetrain;
 
 public class Turn extends CommandBase {
     private double m_degrees;
-    private Drivetrain m_drivetrain;
+    private final Drivetrain m_drivetrain;
 
     private final double allowedError = 0.5;
-
-    private boolean isFinished;
 
     public Turn(double degrees, Drivetrain drivetrain) {
         m_drivetrain = drivetrain;
         m_degrees = m_drivetrain.m_navX.getAngle() + degrees;
-
-        isFinished = false;
         
+        setName("Turn");
         addRequirements(m_drivetrain);
     }
 
@@ -24,18 +21,18 @@ public class Turn extends CommandBase {
     public void execute() {
         double currentDegrees = m_drivetrain.m_navX.getAngle();
 
-        if (Math.abs(currentDegrees - m_degrees) < allowedError) {
-            isFinished = true;
-        } else if (currentDegrees < m_degrees) {
-            m_drivetrain.drive(0.2, -0.2);
+        if (currentDegrees < m_degrees) {
+            m_drivetrain.drive(1, -1);
         } else {
-            m_drivetrain.drive(-0.2, 0.2);
+            m_drivetrain.drive(-1, 1);
         }
     }
 
     @Override
     public boolean isFinished() {
-        return isFinished;
+        double currentDegrees = m_drivetrain.m_navX.getAngle();
+
+        return Math.abs(currentDegrees - m_degrees) < allowedError;
     }
   
     // Called once after isFinished returns true
