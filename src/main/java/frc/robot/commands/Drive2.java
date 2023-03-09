@@ -27,26 +27,24 @@ public class Drive2 extends CommandBase {
 
     @Override
     public void execute() {
-        double x = m_joystick.getX();
-        double y = -m_joystick.getY();
+        double speed = 0.8*(1-m_joystick.getThrottle())/2*m_joystick.getMagnitude();//Math.hypot(x, y)
 
-        double angle = Math.toDegrees(Math.atan(y/x));
-        
-
-        if(x==0 && y == 0){
-          angle = 90;
-        }
-        if(x<0){
-            angle += 180;
-        }
-        angle-=90;
-        angle*=-1;
+        double angle = m_joystick.getDirectionDegrees();//Math.atan(x, -y)
 
         m_drivetrain.angle = angle;
+
+        if(m_joystick.getRawButton(1)){
+            if(angle<0) {
+                angle += 180;
+            }else{
+                angle-=180;
+            }
+            speed*=-1;
+        }
        
         double heading = (m_drivetrain.m_navX.getAngle() % 360.0);
 
-        double difference = heading - angle;
+        double difference = (heading - angle)*Math.signum(speed);
         if(difference>180){
             difference-=360;
         }else if(difference<-180){
@@ -55,17 +53,10 @@ public class Drive2 extends CommandBase {
 
         double error = kP*(difference);
 
-        double speed = 0.5*Math.sqrt(x*x+y*y);
-        if(speed<0.08){
+        if(Math.abs(speed)<0.08){
             speed = 0;
         }
-        if(m_joystick.getRawButton(1)){
-            speed*=-1;
-        }
         if(Math.abs(error)>0.5){
-            // if(Math.abs(error)<0.5){
-            //     error=Math.signum(error);
-            // }
             speed*=Math.signum(error);
             m_drivetrain.drive(-speed, speed);
         }else{

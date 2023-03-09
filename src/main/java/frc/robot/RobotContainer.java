@@ -5,13 +5,18 @@
 package frc.robot;
 
 import frc.robot.Constants.DriveConstants;
-import frc.robot.commands.Auto2;
+import frc.robot.commands.AutoChargeOnly;
+import frc.robot.commands.AutoChargeOnly;
 import frc.robot.commands.Autonomous;
 import frc.robot.commands.TankDrive;
 import frc.robot.commands.Drive2;
+import frc.robot.commands.Drive2X;
+import frc.robot.commands.Drive2W;
+import frc.robot.commands.Drive2WJ;
 import frc.robot.commands.Turn;
 import frc.robot.subsystems.Drivetrain;
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -40,6 +45,7 @@ public class RobotContainer {
     private final Drivetrain m_drivetrain = new Drivetrain();
 
     Joystick m_stick1 = new Joystick(0);
+    XboxController m_xbox = new XboxController(0);
 
     private final SendableChooser<Command> m_chooser = new SendableChooser<>();    
 
@@ -49,12 +55,15 @@ public class RobotContainer {
         configureBindings();
 
         m_chooser.setDefaultOption("Auto1", new Autonomous(m_drivetrain));
-        m_chooser.addOption("Auto2", new Auto2(m_drivetrain));
+        m_chooser.addOption("Auto2", new AutoChargeOnly(m_drivetrain));
         
         SmartDashboard.putData(m_chooser);
 
         m_drivetrain.setDefaultCommand(
-            new Drive2(m_stick1, m_drivetrain)
+            //new Drive2(m_stick1, m_drivetrain)
+            //new Drive2X(m_xbox, m_drivetrain)
+            //new Drive2W(m_xbox, m_drivetrain)
+            new Drive2WJ(m_stick1, m_drivetrain)
             // new TankDrive(
             //     () -> {
             //         return getLeftSpeed();
@@ -72,15 +81,18 @@ public class RobotContainer {
      * @return the left speed
      */
     public double getLeftSpeed() {
-        double thrust = m_stick1.getY(); // forward-back
+        //double thrust = m_stick1.getY(); // forward-back
+        double thrust = m_xbox.getRawAxis(1);
         double twist;
-        if (m_stick1.getRawButton(DriveConstants.kStraightButton)) {
+        //if (m_stick1.getRawButton(DriveConstants.kStraightButton)) {
+            if (m_xbox.getLeftBumper()) {
             twist = 0;
         } else {
-            twist = m_stick1.getZ(); // twist
+            //twist = m_stick1.getZ(); // twist
+            twist = m_xbox.getRawAxis(2);
         }
-        double throttle = (-m_stick1.getThrottle() + 2) / 3; // throttle
-
+        //double throttle = (-m_stick1.getThrottle() + 2) / 3; // throttle
+        double throttle = 1;
         return (thrust * (1 - DriveConstants.kTwistMultiplier * Math.abs(twist))
               + twist * DriveConstants.kTwistMultiplier) * throttle;
     }
@@ -90,17 +102,22 @@ public class RobotContainer {
      * @return the right speed
      */
     public double getRightSpeed() {
-        double thrust = m_stick1.getY(); // forward-back
+        //double thrust = m_stick1.getY(); // forward-back
+        double thrust = m_xbox.getRawAxis(1);
         double twist;
-        if (m_stick1.getRawButton(DriveConstants.kStraightButton)) {
+        //if (m_stick1.getRawButton(DriveConstants.kStraightButton)) {
+            if (m_xbox.getLeftBumper()) {
             twist = 0;
         } else {
-            twist = m_stick1.getZ(); // twist
+            //twist = m_stick1.getZ(); // twist
+            twist = m_xbox.getRawAxis(2);
         }
-        double throttle = (-m_stick1.getThrottle() + 2) / 3; // throttle
+        //double throttle = (-m_stick1.getThrottle() + 2) / 3; // throttle
+        double throttle = 1;
 
         return (thrust * (1 - DriveConstants.kTwistMultiplier * Math.abs(twist))
               - twist * DriveConstants.kTwistMultiplier) * throttle;
+
     }
 
     /**
