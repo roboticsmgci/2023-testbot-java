@@ -20,17 +20,20 @@ public class Drive2WJ extends CommandBase {
         m_xbox = xbox;
         m_drivetrain = drivetrain;
 
-        setName("Drive2W");
+        setName("Drive2WJ");
         addRequirements(m_drivetrain);
     }
 
     @Override
     public void initialize(){
-        m_drivetrain.m_navX.reset();
     }
 
     @Override
     public void execute() {
+        if(m_xbox.getRawButton(5)&&m_xbox.getRawButton(4)){
+            m_drivetrain.resetGyro();
+        }
+
         double speed = 0.8*Math.min(1, Math.hypot(m_xbox.getRawAxis(0), m_xbox.getRawAxis(1)));//filter.calculate(0.9*Math.min(1, m_xbox.getMagnitude()));//Math.hypot(x, y)
 
         double angle = Math.toDegrees(Math.atan2(m_xbox.getRawAxis(0), -m_xbox.getRawAxis(1)));//Math.atan(x, -y)

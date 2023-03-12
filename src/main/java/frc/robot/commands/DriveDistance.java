@@ -22,16 +22,18 @@ public class DriveDistance extends CommandBase {
     @Override
     public void initialize() {
         m_drivetrain.drive(0, 0);
-        m_drivetrain.m_leftLeadEncoder.setPosition(0);
-        m_drivetrain.m_rightLeadEncoder.setPosition(0);
+        // m_drivetrain.m_leftLeadEncoder.setPosition(0);
+        // m_drivetrain.m_rightLeadEncoder.setPosition(0);
+        m_drivetrain.m_Encoder.setPosition(0);
         m_distanceCounter = 0;
     }
 
     @Override
     public void execute() {
-        m_distanceCounter = (- m_drivetrain.m_leftLeadEncoder.getPosition() 
-                             + m_drivetrain.m_rightLeadEncoder.getPosition())
-                            / 2;
+        // m_distanceCounter = (- m_drivetrain.m_leftLeadEncoder.getPosition() 
+        //                      + m_drivetrain.m_rightLeadEncoder.getPosition())
+        //                     / 2;
+        m_distanceCounter = m_drivetrain.m_Encoder.getPosition();
     
         if (m_distance >= 0 && m_distanceCounter < m_distance){
             m_drivetrain.drive(m_speed, m_speed);
@@ -42,9 +44,10 @@ public class DriveDistance extends CommandBase {
 
     @Override
     public boolean isFinished() {
-        m_distanceCounter = (- m_drivetrain.m_leftLeadEncoder.getPosition() 
-                             + m_drivetrain.m_rightLeadEncoder.getPosition())
-                            / 2;
+        // m_distanceCounter = (- m_drivetrain.m_leftLeadEncoder.getPosition() 
+        //                      + m_drivetrain.m_rightLeadEncoder.getPosition())
+        //                     / 2;
+        m_distanceCounter = m_drivetrain.m_Encoder.getPosition();
 
         if (m_distance >= 0) {
             return m_distanceCounter >= m_distance;

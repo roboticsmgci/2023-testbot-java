@@ -7,7 +7,7 @@ public class Turn extends CommandBase {
     private double m_degrees;
     private final Drivetrain m_drivetrain;
 
-    private final double allowedError = 0.5;
+    private final double allowedError = 10;
 
     public Turn(double degrees, Drivetrain drivetrain) {
         m_drivetrain = drivetrain;
@@ -22,9 +22,9 @@ public class Turn extends CommandBase {
         double currentDegrees = m_drivetrain.m_navX.getAngle();
 
         if (currentDegrees < m_degrees) {
-            m_drivetrain.drive(1, -1);
+            m_drivetrain.drive(0.5, -0.5);
         } else {
-            m_drivetrain.drive(-1, 1);
+            m_drivetrain.drive(-0.5, 0.5);
         }
     }
 

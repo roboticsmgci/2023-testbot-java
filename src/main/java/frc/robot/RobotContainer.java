@@ -6,12 +6,9 @@ package frc.robot;
 
 import frc.robot.Constants.DriveConstants;
 import frc.robot.commands.AutoChargeOnly;
-import frc.robot.commands.AutoChargeOnly;
 import frc.robot.commands.Autonomous;
 import frc.robot.commands.TankDrive;
 import frc.robot.commands.Drive2;
-import frc.robot.commands.Drive2X;
-import frc.robot.commands.Drive2W;
 import frc.robot.commands.Drive2WJ;
 import frc.robot.commands.Turn;
 import frc.robot.subsystems.Drivetrain;
@@ -54,8 +51,8 @@ public class RobotContainer {
         // Configure the trigger bindings
         configureBindings();
 
-        m_chooser.setDefaultOption("Auto1", new Autonomous(m_drivetrain));
-        m_chooser.addOption("Auto2", new AutoChargeOnly(m_drivetrain));
+        //m_chooser.addOption("Auto1", new Autonomous(m_drivetrain));
+        m_chooser.setDefaultOption("Auto2", new AutoChargeOnly(m_drivetrain));
         
         SmartDashboard.putData(m_chooser);
 
@@ -133,7 +130,7 @@ public class RobotContainer {
         // frc2::JoystickButton(&m_stick2,2).WhenHeld(
         //     SpinPropeller(m_propeller)
         // );
-        new JoystickButton(m_stick1, DriveConstants.kTurnButton).onTrue(new Turn(90, m_drivetrain).withTimeout(2));
+        new JoystickButton(m_stick1, DriveConstants.kTurnButton).onTrue(new Turn(90, m_drivetrain));
     }
 
     /**

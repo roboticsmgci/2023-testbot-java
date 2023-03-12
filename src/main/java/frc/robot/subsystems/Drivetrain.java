@@ -23,14 +23,18 @@ public class Drivetrain extends SubsystemBase {
     private final CANSparkMax m_rightFollowMotor = new CANSparkMax(DriveConstants.kRightFollowDeviceID,
                                                                    MotorType.kBrushed);
 
+    private final CANSparkMax m_encoderMotor = new CANSparkMax(6, MotorType.kBrushless);
+
     private final DifferentialDrive m_robotDrive = new DifferentialDrive(m_leftLeadMotor, m_rightLeadMotor);
 
+    private double m_pitchError;
     // Gyro
     public AHRS m_navX = new AHRS(SPI.Port.kMXP);
 
     // Encoders
-    public RelativeEncoder m_leftLeadEncoder = m_leftLeadMotor.getEncoder();
-    public RelativeEncoder m_rightLeadEncoder = m_rightLeadMotor.getEncoder();
+    // public RelativeEncoder m_leftLeadEncoder = m_leftLeadMotor.getEncoder();
+    // public RelativeEncoder m_rightLeadEncoder = m_rightLeadMotor.getEncoder();
+    public RelativeEncoder m_Encoder = m_encoderMotor.getEncoder();
 
     public Drivetrain() {
 
@@ -49,8 +53,11 @@ public class Drivetrain extends SubsystemBase {
         m_rightFollowMotor.follow(m_rightLeadMotor);
 
         // Set conversion ratios
-        m_leftLeadEncoder.setPositionConversionFactor(0.0443);
-        m_rightLeadEncoder.setPositionConversionFactor(0.0443);
+        // m_leftLeadEncoder.setPositionConversionFactor(0.0443);
+        // m_rightLeadEncoder.setPositionConversionFactor(0.0443);
+        m_Encoder.setPositionConversionFactor(0.0443);
+
+        m_pitchError = m_navX.getRoll();
 
         setName("Drivetrain");
 
@@ -71,12 +78,22 @@ public class Drivetrain extends SubsystemBase {
      */
     public void log() {
         SmartDashboard.putNumber("Gyro", m_navX.getYaw());
+        SmartDashboard.putNumber("Pitch", getPitch());
         SmartDashboard.putNumber("target", angle);
     }
 
     @Override
     public void periodic() {
         log();
+    }
+
+    public double getPitch(){
+        return m_navX.getRoll()-4.3;
+    }
+
+    public void resetGyro(){
+        m_navX.reset();
+        m_pitchError = m_navX.getRoll();
     }
 
 }
