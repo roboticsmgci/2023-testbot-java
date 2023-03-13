@@ -55,12 +55,11 @@ public class Drivetrain extends SubsystemBase {
         // Set conversion ratios
         // m_leftLeadEncoder.setPositionConversionFactor(0.0443);
         // m_rightLeadEncoder.setPositionConversionFactor(0.0443);
-        m_Encoder.setPositionConversionFactor(0.0443);
+        m_Encoder.setPositionConversionFactor(0.02);
 
         m_pitchError = m_navX.getRoll();
 
         setName("Drivetrain");
-
     }
 
     /**
@@ -70,7 +69,8 @@ public class Drivetrain extends SubsystemBase {
      * @param right The speed of the right speed.
      */
     public void drive(double left, double right) {
-        m_robotDrive.tankDrive(left, right);
+        m_robotDrive.tankDrive(left, right, false);
+        m_encoderMotor.set((left+right)/2);
     }
 
     /**
@@ -78,8 +78,10 @@ public class Drivetrain extends SubsystemBase {
      */
     public void log() {
         SmartDashboard.putNumber("Gyro", m_navX.getYaw());
+        SmartDashboard.putNumber("Angle", m_navX.getAngle());
         SmartDashboard.putNumber("Pitch", getPitch());
         SmartDashboard.putNumber("target", angle);
+        SmartDashboard.putNumber("encoder", m_Encoder.getPosition());
     }
 
     @Override

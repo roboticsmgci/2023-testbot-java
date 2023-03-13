@@ -22,9 +22,9 @@ public class Turn extends CommandBase {
         double currentDegrees = m_drivetrain.m_navX.getAngle();
 
         if (currentDegrees < m_degrees) {
-            m_drivetrain.drive(0.5, -0.5);
+            m_drivetrain.drive(0.3, -0.3);
         } else {
-            m_drivetrain.drive(-0.5, 0.5);
+            m_drivetrain.drive(-0.3, 0.3);
         }
     }
 
