@@ -50,9 +50,10 @@ public class RobotContainer {
         // Configure the trigger bindings
         configureBindings();
 
-         m_chooser.setDefaultOption("Auto1", new Autonomous(m_drivetrain));
+         //m_chooser.setDefaultOption("Auto1", new Autonomous(m_drivetrain));
         // m_chooser.addOption("Auto2", new AutoChargeOnly(m_drivetrain));
-        //m_chooser.setDefaultOption("Auto3", new AutoChargeMove(m_drivetrain));
+        //m_chooser.addOption("Auto3", new AutoWithPreload(m_drivetrain));
+        m_chooser.setDefaultOption("Auto4", new AutoChargeMove(m_drivetrain));
         
         SmartDashboard.putData(m_chooser);
 
