@@ -6,6 +6,7 @@ package frc.robot;
 
 import frc.robot.Constants.DriveConstants;
 import frc.robot.commands.AutoChargeOnly;
+import frc.robot.commands.AutoWithPreload;
 import frc.robot.commands.Autonomous;
 import frc.robot.commands.TankDrive;
 import frc.robot.commands.Drive2;
@@ -52,6 +53,7 @@ public class RobotContainer {
         configureBindings();
 
         //m_chooser.addOption("Auto1", new Autonomous(m_drivetrain));
+        m_chooser.addOption("Auto3", new AutoWithPreload(m_drivetrain));
         m_chooser.setDefaultOption("Auto2", new AutoChargeOnly(m_drivetrain));
         
         SmartDashboard.putData(m_chooser);
