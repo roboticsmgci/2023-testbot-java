@@ -13,7 +13,6 @@ public class Drive2WJ extends CommandBase {
     //private double distance;
     private double kP = 0.007;
 
-    private SlewRateLimiter filter = new SlewRateLimiter(1);
     private Drivetrain m_drivetrain;
 
     public Drive2WJ(Joystick xbox, Drivetrain drivetrain) {
@@ -36,7 +35,7 @@ public class Drive2WJ extends CommandBase {
 
         double speed = 0.7*Math.max(Math.abs(m_xbox.getRawAxis(0)), Math.abs(m_xbox.getRawAxis(1)));//Math.min(1, Math.hypot(m_xbox.getRawAxis(0), m_xbox.getRawAxis(1)));//filter.calculate(0.9*Math.min(1, m_xbox.getMagnitude()));//Math.hypot(x, y)
 
-        double brake = m_xbox.getRawAxis(2);
+        double brake = m_xbox.getRawButton(1)?1:0;
 
         double angle = Math.toDegrees(Math.atan2(m_xbox.getRawAxis(0), -m_xbox.getRawAxis(1)));//Math.atan(x, -y)
 
@@ -78,7 +77,7 @@ public class Drive2WJ extends CommandBase {
             r+=speed*(1-brake+error);
         }
 
-        m_drivetrain.drive(l, r);
+        m_drivetrain.drive(l, r, true);
     }
 
     @Override
