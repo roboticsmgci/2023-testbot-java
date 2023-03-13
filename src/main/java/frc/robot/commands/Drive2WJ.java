@@ -30,6 +30,13 @@ public class Drive2WJ extends CommandBase {
 
     @Override
     public void execute() {
+        /* Xbox controller axes:
+         * 0: left x
+         * 1: left y
+         * 2: right x
+         * 3: right y
+         */
+
         if(m_xbox.getRawButton(5)&&m_xbox.getRawButton(4)){
             m_drivetrain.resetGyro();
         }
