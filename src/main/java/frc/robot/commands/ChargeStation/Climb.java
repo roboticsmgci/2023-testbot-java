@@ -1,4 +1,4 @@
-package frc.robot.commands;
+package frc.robot.commands.ChargeStation;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.Drivetrain;
@@ -22,7 +22,7 @@ public class Climb extends CommandBase {
 
     @Override
     public void execute() {
-        m_drivetrain.drive(0.6, 0.6);
+        m_drivetrain.drive(0.36, 0.36);
     }
 
     @Override
