@@ -6,12 +6,13 @@ import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import edu.wpi.first.wpilibj2.command.button.POVButton;
 import frc.robot.subsystems.Drivetrain;
 
 public class Drive2WJ extends CommandBase {
     private Joystick m_xbox;
     //private double distance;
-    private double kP = 0.007;
+    private double kP = 0.009;
 
     private Drivetrain m_drivetrain;
 
@@ -29,19 +30,21 @@ public class Drive2WJ extends CommandBase {
 
     @Override
     public void execute() {
-        if(m_xbox.getRawButton(5)&&m_xbox.getRawButton(4)){
+        if(m_xbox.getRawButton(5)&&m_xbox.getRawButton(6)){
             m_drivetrain.resetGyro();
         }
 
         double speed = 0.7*Math.max(Math.abs(m_xbox.getRawAxis(0)), Math.abs(m_xbox.getRawAxis(1)));//Math.min(1, Math.hypot(m_xbox.getRawAxis(0), m_xbox.getRawAxis(1)));//filter.calculate(0.9*Math.min(1, m_xbox.getMagnitude()));//Math.hypot(x, y)
 
-        double brake = m_xbox.getRawButton(1)?1:0;
+        boolean brake = m_xbox.getRawButton(3);
 
         double angle = Math.toDegrees(Math.atan2(m_xbox.getRawAxis(0), -m_xbox.getRawAxis(1)));//Math.atan(x, -y)
 
         m_drivetrain.angle = angle;
 
-        if(m_xbox.getRawButton(2) || m_xbox.getRawButton(5)){
+        double turnError = getCorrection(angle, 1);
+
+        if(m_xbox.getRawButton(1)){
             if(angle<0) {
                 angle += 180;
             }else{
@@ -68,16 +71,31 @@ public class Drive2WJ extends CommandBase {
 
         double l=0, r=0;
 
-        if(Math.abs(error)>0.6){
+        if(m_xbox.getPOV()==0){
+            m_drivetrain.drive(0.2, 0.2);
+        } else if(m_xbox.getPOV()==180){
+            m_drivetrain.drive(-0.2, -0.2);
+        }
+        else if(m_xbox.getPOV()==90){
+            m_drivetrain.drive(0.3, -0.3);
+        }
+        else if(m_xbox.getPOV()==270){
+            m_drivetrain.drive(-0.3, 0.3);
+        }
+        else if(Math.abs(error)>0.55){
             speed*=Math.signum(error);
             l-=speed;
             r+=speed;
+            m_drivetrain.drive(l, r, false);
+        }else if(brake){
+            l-=turnError;
+            r+=turnError;
+            m_drivetrain.drive(l, r, false);
         }else{
-            l+=speed*(1-brake-error);
-            r+=speed*(1-brake+error);
+            l+=speed*(1-error);
+            r+=speed*(1+error);
+            m_drivetrain.drive(l, r, true);
         }
-
-        m_drivetrain.drive(l, r, true);
     }
 
     @Override
