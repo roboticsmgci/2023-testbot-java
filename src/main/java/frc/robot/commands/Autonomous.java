@@ -12,6 +12,6 @@ public class Autonomous extends SequentialCommandGroup {
         setName("Autonomous");
         // addCommands(new DriveBack(drivetrain),
         // new DriveForward(drivetrain));
-        addCommands(new Turn(90, drivetrain));
+        addCommands(new TurnPID(90, drivetrain));
     }
 }

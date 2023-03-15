@@ -56,6 +56,7 @@ public class Drive2WJ extends CommandBase {
 
         double speed = 0.8*Math.min(1, Math.hypot(m_xbox.getRawAxis(0), m_xbox.getRawAxis(1)));//filter.calculate(0.9*Math.min(1, m_xbox.getMagnitude()));//Math.hypot(x, y)
 
+        // Angle between the y-axis and the direction the stick is pointed
         double angle = Math.toDegrees(Math.atan2(m_xbox.getRawAxis(0), -m_xbox.getRawAxis(1)));//Math.atan(x, -y)
 
         m_drivetrain.angle = angle;
