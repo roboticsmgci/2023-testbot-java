@@ -13,7 +13,6 @@ public class Drive2WJ extends CommandBase {
     //private double distance;
     private double kP = 0.007;
 
-    private SlewRateLimiter filter = new SlewRateLimiter(1);
     private Drivetrain m_drivetrain;
 
     public Drive2WJ(Joystick xbox, Drivetrain drivetrain) {
@@ -54,14 +53,16 @@ public class Drive2WJ extends CommandBase {
             m_drivetrain.resetGyro();
         }
 
-        double speed = 0.8*Math.min(1, Math.hypot(m_xbox.getRawAxis(0), m_xbox.getRawAxis(1)));//filter.calculate(0.9*Math.min(1, m_xbox.getMagnitude()));//Math.hypot(x, y)
+        double speed = 0.7*Math.max(Math.abs(m_xbox.getRawAxis(0)), Math.abs(m_xbox.getRawAxis(1)));//Math.min(1, Math.hypot(m_xbox.getRawAxis(0), m_xbox.getRawAxis(1)));//filter.calculate(0.9*Math.min(1, m_xbox.getMagnitude()));//Math.hypot(x, y)
+
+        double brake = m_xbox.getRawButton(1)?1:0;
 
         // Angle between the y-axis and the direction the stick is pointed
         double angle = Math.toDegrees(Math.atan2(m_xbox.getRawAxis(0), -m_xbox.getRawAxis(1)));//Math.atan(x, -y)
 
         m_drivetrain.angle = angle;
 
-        if(m_xbox.getRawButton(5)){
+        if(m_xbox.getRawButton(2) || m_xbox.getRawButton(5)){
             if(angle<0) {
                 angle += 180;
             }else{
@@ -87,22 +88,17 @@ public class Drive2WJ extends CommandBase {
         }
 
         double l=0, r=0;
-        double angle2 = Math.toDegrees(Math.atan2(m_xbox.getRawAxis(2), -m_xbox.getRawAxis(3)));
-        double turn = getCorrection(angle2, 1);//Math.atan2(x, -y))
-        double turnSpeed = 0.7*Math.min(1, Math.hypot(m_xbox.getRawAxis(2), m_xbox.getRawAxis(3)));
-        l-=turnSpeed*Math.signum(turn);
-        r+=turnSpeed*Math.signum(turn);
 
-        if(Math.abs(error)>0.45){
+        if(Math.abs(error)>0.6){
             speed*=Math.signum(error);
             l-=speed;
             r+=speed;
         }else{
-            l+=speed*(1-error);
-            r+=speed*(1+error);
+            l+=speed*(1-brake-error);
+            r+=speed*(1-brake+error);
         }
 
-        m_drivetrain.drive(l, r);
+        m_drivetrain.drive(l, r, true);
     }
 
     @Override

@@ -1,20 +1,20 @@
-package frc.robot.commands;
+package frc.robot.commands.ChargeStation;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.Drivetrain;
 
-public class Balance extends CommandBase {
+public class MoveOver extends CommandBase {
    
     private final Drivetrain m_drivetrain;
     private double m_pitch, m_lastPitch;
 
-    public Balance(Drivetrain drivetrain) {
+    public MoveOver(Drivetrain drivetrain) {
        
         m_drivetrain = drivetrain;
-        m_pitch = 5;
-        m_lastPitch = 5;
+        m_pitch = 0;
+        m_lastPitch = 0;
         
-        setName("Balance");
+        setName("MoveOver");
         addRequirements(m_drivetrain);
     }
 
@@ -27,18 +27,14 @@ public class Balance extends CommandBase {
 
     @Override
     public void execute() {
-        m_pitch = m_drivetrain.getPitch();
-        if(m_lastPitch-m_pitch>0.5){
-            m_drivetrain.drive(-0.1-m_pitch*0.01, -0.1-m_pitch*0.01);
-        }else{
-            m_drivetrain.drive(0.5, 0.5);
-        }
         m_lastPitch = m_pitch;
+        m_pitch = m_drivetrain.getPitch();
+        m_drivetrain.drive(-0.3, -0.3);
     }
 
     @Override
     public boolean isFinished() {
-        return m_pitch<3;
+        return m_pitch > 0 && m_pitch<5 && m_lastPitch-m_pitch>0.4;
     }
   
     // Called once after isFinished returns true
