@@ -19,7 +19,7 @@ public class ArmSet extends CommandBase {
 
     @Override
     public void execute() {
-        double error = m_target-m_arm.m_Encoder.getPosition();
+        double error = m_target-m_arm.m_encoder.getPosition();
         //if(error)
     }
 
