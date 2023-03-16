@@ -29,6 +29,6 @@ public class ArmDrive extends CommandBase {
 
     @Override
     public void end(boolean interrupted) {
-        m_arm.drive(0);
+        m_arm.setMotor(0);
     }
 }
