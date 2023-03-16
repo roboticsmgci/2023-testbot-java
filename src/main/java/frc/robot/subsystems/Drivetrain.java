@@ -7,6 +7,7 @@ import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.wpilibj.SPI;
+import edu.wpi.first.wpilibj.SerialPort;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -16,13 +17,13 @@ public class Drivetrain extends SubsystemBase {
     public double angle = 0;
 
     private final CANSparkMax m_leftLeadMotor = new CANSparkMax(DriveConstants.kLeftLeadDeviceID,
-                                                                MotorType.kBrushed);
+                                                                MotorType.kBrushless);
     private final CANSparkMax m_rightLeadMotor = new CANSparkMax(DriveConstants.kRightLeadDeviceID,
-                                                                 MotorType.kBrushed);
+                                                                 MotorType.kBrushless);
     private final CANSparkMax m_leftFollowMotor = new CANSparkMax(DriveConstants.kLeftFollowDeviceID,
-                                                                  MotorType.kBrushed);
+                                                                  MotorType.kBrushless);
     private final CANSparkMax m_rightFollowMotor = new CANSparkMax(DriveConstants.kRightFollowDeviceID,
-                                                                   MotorType.kBrushed);
+                                                                   MotorType.kBrushless);
 
     private final CANSparkMax m_encoderMotor = new CANSparkMax(6, MotorType.kBrushless);
 
@@ -30,7 +31,7 @@ public class Drivetrain extends SubsystemBase {
 
     private double m_pitchError;
     // Gyro
-    public AHRS m_navX = new AHRS(SPI.Port.kMXP);
+    public AHRS m_navX = new AHRS(SerialPort.Port.kUSB1);
 
     // Encoders
     // public RelativeEncoder m_leftLeadEncoder = m_leftLeadMotor.getEncoder();
@@ -109,7 +110,10 @@ public class Drivetrain extends SubsystemBase {
     }
 
     public double getPitch(){
-        return m_navX.getRoll()-4.3;
+        if (m_pitchError == 0) {
+            m_pitchError = m_navX.getPitch();
+        }
+        return -(m_navX.getPitch()-m_pitchError);
     }
 
     public void resetGyro(){

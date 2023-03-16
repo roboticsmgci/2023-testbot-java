@@ -61,16 +61,16 @@ public class RobotContainer {
             //new Drive2(m_stick1, m_drivetrain)
             //new Drive2X(m_xbox, m_drivetrain)
             //new Drive2W(m_xbox, m_drivetrain)
-            new Drive2WJ(m_stick1, m_drivetrain)
-            // new TankDrive(
-            //     () -> {
-            //         return getLeftSpeed();
-            //     },
-            //     () -> {
-            //         return getRightSpeed();
-            //     },
-            //     m_drivetrain
-            // )
+            // new Drive2WJ(m_stick1, m_drivetrain)
+            new TankDrive(
+                () -> {
+                    return getLeftSpeed();
+                },
+                () -> {
+                    return getRightSpeed();
+                },
+                m_drivetrain
+            )
         );
     }
 
@@ -87,7 +87,7 @@ public class RobotContainer {
             twist = 0;
         } else {
             //twist = m_stick1.getZ(); // twist
-            twist = m_xbox.getRawAxis(2);
+            twist = m_xbox.getRawAxis(4);
         }
         //double throttle = (-m_stick1.getThrottle() + 2) / 3; // throttle
         double throttle = 1;
@@ -108,7 +108,7 @@ public class RobotContainer {
             twist = 0;
         } else {
             //twist = m_stick1.getZ(); // twist
-            twist = m_xbox.getRawAxis(2);
+            twist = m_xbox.getRawAxis(4);
         }
         //double throttle = (-m_stick1.getThrottle() + 2) / 3; // throttle
         double throttle = 1;
