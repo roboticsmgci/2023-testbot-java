@@ -6,7 +6,6 @@ import com.revrobotics.RelativeEncoder;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.math.filter.SlewRateLimiter;
-import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.SerialPort;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -25,7 +24,6 @@ public class Drivetrain extends SubsystemBase {
     private final CANSparkMax m_rightFollowMotor = new CANSparkMax(DriveConstants.kRightFollowDeviceID,
                                                                    MotorType.kBrushless);
 
-    private final CANSparkMax m_encoderMotor = new CANSparkMax(6, MotorType.kBrushless);
 
     private final DifferentialDrive m_robotDrive = new DifferentialDrive(m_leftLeadMotor, m_rightLeadMotor);
 
@@ -34,15 +32,13 @@ public class Drivetrain extends SubsystemBase {
     public AHRS m_navX = new AHRS(SerialPort.Port.kUSB1);
 
     // Encoders
-    // public RelativeEncoder m_leftLeadEncoder = m_leftLeadMotor.getEncoder();
-    // public RelativeEncoder m_rightLeadEncoder = m_rightLeadMotor.getEncoder();
-    public RelativeEncoder m_Encoder = m_encoderMotor.getEncoder();
+    public RelativeEncoder m_leftLeadEncoder = m_leftLeadMotor.getEncoder();
+    public RelativeEncoder m_rightLeadEncoder = m_rightLeadMotor.getEncoder();
 
-    private SlewRateLimiter m_leftLimiter = new SlewRateLimiter(1);
-    private SlewRateLimiter m_rightLimiter = new SlewRateLimiter(1);
+    private SlewRateLimiter m_speedLimiter = new SlewRateLimiter(1);
 
-    private SlewRateLimiter m_leftBrakeLimiter = new SlewRateLimiter(1.5);
-    private SlewRateLimiter m_rightBrakeLimiter = new SlewRateLimiter(1.5);
+    private SlewRateLimiter m_brakeLimiter = new SlewRateLimiter(1.5);
+    private SlewRateLimiter m_turnLimiter = new SlewRateLimiter(1.5);
 
     public Drivetrain() {
 
@@ -60,12 +56,13 @@ public class Drivetrain extends SubsystemBase {
         m_leftFollowMotor.follow(m_leftLeadMotor);
         m_rightFollowMotor.follow(m_rightLeadMotor);
 
-        // Set conversion ratios
-        // m_leftLeadEncoder.setPositionConversionFactor(0.0443);
-        // m_rightLeadEncoder.setPositionConversionFactor(0.0443);
-        m_Encoder.setPositionConversionFactor(0.02);
+        m_robotDrive.setDeadband(0.06);
 
-        m_pitchError = m_navX.getRoll();
+        // Set conversion ratios
+        m_leftLeadEncoder.setPositionConversionFactor(0.0443);
+        m_rightLeadEncoder.setPositionConversionFactor(0.0443);
+
+        m_pitchError = 0;
 
         setName("Drivetrain");
     }
@@ -78,19 +75,20 @@ public class Drivetrain extends SubsystemBase {
      */
     public void drive(double left, double right) {
         m_robotDrive.tankDrive(left, right, false);
-        m_encoderMotor.set((left+right)/2);
     }
 
     public void drive(double left, double right, boolean limit) {
+        drive2((left+right)/2, (left-right)/2, limit);
+    }
+
+    public void drive2(double speed, double turn, boolean limit) {
         if(limit){
-            left = m_leftLimiter.calculate(left);
-            right = m_rightLimiter.calculate(right);
+            speed = m_speedLimiter.calculate(speed);
         }else{
-            left = m_leftBrakeLimiter.calculate(left);
-            right = m_rightBrakeLimiter.calculate(right);
+            speed = m_brakeLimiter.calculate(speed);
         }
-        m_robotDrive.tankDrive(left, right, false);
-        m_encoderMotor.set((left+right)/2);
+        turn = m_turnLimiter.calculate(turn);
+        drive(speed+turn, speed - turn);
     }
 
     /**
@@ -100,8 +98,10 @@ public class Drivetrain extends SubsystemBase {
         SmartDashboard.putNumber("Gyro", m_navX.getYaw());
         SmartDashboard.putNumber("Angle", m_navX.getAngle());
         SmartDashboard.putNumber("Pitch", getPitch());
+        SmartDashboard.putNumber("r", m_navX.getPitch());
         SmartDashboard.putNumber("target", angle);
-        SmartDashboard.putNumber("encoder", m_Encoder.getPosition());
+        SmartDashboard.putNumber("l1", m_leftLeadEncoder.getPosition());
+        SmartDashboard.putNumber("l2", m_rightLeadEncoder.getPosition());
     }
 
     @Override
@@ -110,14 +110,9 @@ public class Drivetrain extends SubsystemBase {
     }
 
     public double getPitch(){
-        if (m_pitchError == 0) {
+        if(m_pitchError==0){
             m_pitchError = m_navX.getPitch();
         }
         return -(m_navX.getPitch()-m_pitchError);
-    }
-
-    public void resetGyro(){
-        m_navX.reset();
-        m_pitchError = m_navX.getRoll();
     }
 }

@@ -6,11 +6,14 @@ package frc.robot;
 
 import frc.robot.Constants.DriveConstants;
 import frc.robot.commands.TankDrive;
-import frc.robot.commands.Drive2;
 import frc.robot.commands.Drive2WJ;
+import frc.robot.commands.Drive3;
 import frc.robot.commands.Turn;
 import frc.robot.commands.autonomous.*;
 import frc.robot.subsystems.Drivetrain;
+import edu.wpi.first.cameraserver.CameraServer;
+import edu.wpi.first.networktables.NetworkTable;
+import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -19,6 +22,11 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.InputStream;
+import java.net.*;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -35,6 +43,8 @@ public class RobotContainer {
     private final CommandXboxController m_driverController =
         new CommandXboxController(OperatorConstants.kDriverControllerPort);*/
 
+    NetworkTableInstance inst = NetworkTableInstance.getDefault();
+    NetworkTable table = inst.getTable("SmartDashboard");
     
     // Propeller m_propeller;
 
@@ -43,35 +53,53 @@ public class RobotContainer {
     Joystick m_stick1 = new Joystick(0);
     XboxController m_xbox = new XboxController(0);
 
-    private final SendableChooser<Command> m_chooser = new SendableChooser<>();    
+    private final SendableChooser<Command> m_chooser = new SendableChooser<>();
 
     /** The container for the robot. Contains subsystems, OI devices, and commands. */
-    public RobotContainer() {
+    public RobotContainer(){
+        inst.startServer();
+
         // Configure the trigger bindings
         configureBindings();
 
-         //m_chooser.setDefaultOption("Auto1", new Autonomous(m_drivetrain));
-        // m_chooser.addOption("Auto2", new AutoChargeOnly(m_drivetrain));
-        //m_chooser.addOption("Auto3", new AutoWithPreload(m_drivetrain));
-        m_chooser.setDefaultOption("Auto4", new AutoChargeMove(m_drivetrain));
+        CameraServer.startAutomaticCapture();
+
+        m_chooser.addOption("Auto move only", new AutoMoveOnly(m_drivetrain));
+        m_chooser.addOption("Auto charge only", new AutoChargeOnly(m_drivetrain));
+        m_chooser.setDefaultOption("Auto charge move", new AutoChargeMove(m_drivetrain));
         
         SmartDashboard.putData(m_chooser);
 
         m_drivetrain.setDefaultCommand(
-            //new Drive2(m_stick1, m_drivetrain)
-            //new Drive2X(m_xbox, m_drivetrain)
-            //new Drive2W(m_xbox, m_drivetrain)
-            // new Drive2WJ(m_stick1, m_drivetrain)
+            //new Drive3(m_stick1, m_drivetrain)
+            //new Drive2WJ(m_stick1, m_drivetrain)
             new TankDrive(
                 () -> {
                     return getLeftSpeed();
                 },
-                () -> {
+                () -> {                
                     return getRightSpeed();
                 },
                 m_drivetrain
             )
         );
+
+
+
+        // try{
+        //     Socket socket = new Socket("wpilibpi.local", 5801);
+        //     InputStream input = socket.getInputStream();
+        //     int character;
+        //     StringBuilder data = new StringBuilder();
+        //     InputStreamReader reader = new InputStreamReader(input);
+        //      while((character = reader.read()) != -1){
+        //         data.append((char)character);
+        //      }
+
+        //      SmartDashboard.putString("data: ", ""+data);
+        // }catch (IOException e){
+        //     SmartDashboard.putString("Exception: ", ""+e.toString());
+        // }
     }
 
     /**
@@ -80,7 +108,12 @@ public class RobotContainer {
      */
     public double getLeftSpeed() {
         //double thrust = m_stick1.getY(); // forward-back
-        double thrust = m_xbox.getRawAxis(1);
+        double thrust = -m_xbox.getRawAxis(1);
+        if(m_xbox.getPOV()==0){
+            thrust = 0.2;
+        }else if(m_xbox.getPOV()==180){
+            thrust = -0.2;
+        }
         double twist;
         //if (m_stick1.getRawButton(DriveConstants.kStraightButton)) {
             if (m_xbox.getLeftBumper()) {
@@ -89,10 +122,23 @@ public class RobotContainer {
             //twist = m_stick1.getZ(); // twist
             twist = m_xbox.getRawAxis(4);
         }
+        if(m_xbox.getPOV()==90){
+            twist = 0.3;
+        }else if(m_xbox.getPOV()==270){
+            twist = -0.3;
+        }
+
+        
         //double throttle = (-m_stick1.getThrottle() + 2) / 3; // throttle
-        double throttle = 1;
-        return (thrust * (1 - DriveConstants.kTwistMultiplier * Math.abs(twist))
+        double throttle = 0.6;
+
+        if(m_xbox.getRawButton(6)){
+            throttle = 0.2;
+        }
+
+        return -(thrust * (1 - DriveConstants.kTwistMultiplier * Math.abs(twist))
               + twist * DriveConstants.kTwistMultiplier) * throttle;
+
     }
 
     /**
@@ -101,7 +147,12 @@ public class RobotContainer {
      */
     public double getRightSpeed() {
         //double thrust = m_stick1.getY(); // forward-back
-        double thrust = m_xbox.getRawAxis(1);
+        double thrust = -m_xbox.getRawAxis(1);
+        if(m_xbox.getPOV()==0){
+            thrust = 0.2;
+        }else if(m_xbox.getPOV()==180){
+            thrust = -0.2;
+        }
         double twist;
         //if (m_stick1.getRawButton(DriveConstants.kStraightButton)) {
             if (m_xbox.getLeftBumper()) {
@@ -110,10 +161,21 @@ public class RobotContainer {
             //twist = m_stick1.getZ(); // twist
             twist = m_xbox.getRawAxis(4);
         }
-        //double throttle = (-m_stick1.getThrottle() + 2) / 3; // throttle
-        double throttle = 1;
+        if(m_xbox.getPOV()==90){
+            twist = 0.2;
+        }else if(m_xbox.getPOV()==270){
+            twist = -0.2;
+        }
 
-        return (thrust * (1 - DriveConstants.kTwistMultiplier * Math.abs(twist))
+        
+        //double throttle = (-m_stick1.getThrottle() + 2) / 3; // throttle
+        double throttle = 0.6;
+
+        if(m_xbox.getRawButton(6)){
+            throttle = 0.2;
+        }
+
+        return -(thrust * (1 - DriveConstants.kTwistMultiplier * Math.abs(twist))
               - twist * DriveConstants.kTwistMultiplier) * throttle;
 
     }

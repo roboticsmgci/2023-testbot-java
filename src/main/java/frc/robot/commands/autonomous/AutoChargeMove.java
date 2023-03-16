@@ -1,6 +1,7 @@
 package frc.robot.commands.autonomous;
 
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import frc.robot.commands.DriveDistance;
 import frc.robot.commands.DriveTime;
 import frc.robot.commands.Turn;
 import frc.robot.commands.ChargeStation.*;
@@ -14,7 +15,8 @@ public class AutoChargeMove extends SequentialCommandGroup {
 
         setName("Auto Charge Move");
         addCommands(new MoveOver(drivetrain));
-        addCommands(new DriveTime(500, 0, drivetrain));
+        addCommands(new DriveTime(200, 0, drivetrain));
+        addCommands(new DriveDistance(1, 0.4, drivetrain));
         addCommands(new AutoChargeOnly(drivetrain));
     }
 }
