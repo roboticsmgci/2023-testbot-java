@@ -71,17 +71,17 @@ public class RobotContainer {
         SmartDashboard.putData(m_chooser);
 
         m_drivetrain.setDefaultCommand(
-            //new Drive3(m_stick1, m_drivetrain)
+            new Drive3(m_stick1, m_drivetrain)
             //new Drive2WJ(m_stick1, m_drivetrain)
-            new TankDrive(
-                () -> {
-                    return getLeftSpeed();
-                },
-                () -> {                
-                    return getRightSpeed();
-                },
-                m_drivetrain
-            )
+            // new TankDrive(
+            //     () -> {
+            //         return getLeftSpeed();
+            //     },
+            //     () -> {                
+            //         return getRightSpeed();
+            //     },
+            //     m_drivetrain
+            // )
         );
 
 
@@ -130,10 +130,10 @@ public class RobotContainer {
 
         
         //double throttle = (-m_stick1.getThrottle() + 2) / 3; // throttle
-        double throttle = 0.6;
+        double throttle = 0.3;
 
         if(m_xbox.getRawButton(6)){
-            throttle = 0.2;
+            throttle = 0.1;
         }
 
         return -(thrust * (1 - DriveConstants.kTwistMultiplier * Math.abs(twist))
@@ -169,10 +169,10 @@ public class RobotContainer {
 
         
         //double throttle = (-m_stick1.getThrottle() + 2) / 3; // throttle
-        double throttle = 0.6;
+        double throttle = 0.3;
 
         if(m_xbox.getRawButton(6)){
-            throttle = 0.2;
+            throttle = 0.1;
         }
 
         return -(thrust * (1 - DriveConstants.kTwistMultiplier * Math.abs(twist))

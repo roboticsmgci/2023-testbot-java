@@ -12,7 +12,7 @@ public class AutoMoveOnly extends SequentialCommandGroup {
         m_drivetrain = drivetrain;
 
         setName("AutoMoveOnly");
-        addCommands(new DriveDistance(3, 0.4, drivetrain));
+        addCommands(new DriveDistance(3, 0.2, drivetrain));
         
         // addCommands(new Turn(90, drivetrain));
     }

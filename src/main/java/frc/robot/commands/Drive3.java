@@ -13,7 +13,7 @@ import frc.robot.subsystems.Drivetrain;
 public class Drive3 extends CommandBase {
     private Joystick m_xbox;
     //private double distance;
-    private double kP = 0.008, kD = 0.001;
+    private double kP = 0.004, kD = 0.0005;
     
     private PDController pd = new PDController(kP, kD);
 
@@ -47,21 +47,25 @@ public class Drive3 extends CommandBase {
 
         correction = pd.calculate(angle, m_drivetrain.m_navX.getAngle()%360);
 
+        if (Math.hypot(m_xbox.getRawAxis(4), m_xbox.getRawAxis(5)) < 0.1) {
+            correction = 0;
+        }
+
         if(m_xbox.getPOV()==0){
-            m_drivetrain.drive(0.2, 0.2);
+            m_drivetrain.drive(0.08, 0.08);
         } else if(m_xbox.getPOV()==180){
-            m_drivetrain.drive(-0.2, -0.2);
+            m_drivetrain.drive(-0.08, -0.08);
         }
         else if(m_xbox.getPOV()==90){
-            m_drivetrain.drive(0.3, -0.3);
+            m_drivetrain.drive(0.12, -0.12);
         }
         else if(m_xbox.getPOV()==270){
-            m_drivetrain.drive(-0.3, 0.3);
+            m_drivetrain.drive(-0.12, 0.12);
         }else if(m_xbox.getRawButton(7)&&m_xbox.getRawButton(8)){
-            m_drivetrain.drive2(speed, 0.5*m_xbox.getRawAxis(2), true);
+            m_drivetrain.drive2(speed, 0.25*m_xbox.getRawAxis(2), true);
         }
         else{
-            m_drivetrain.drive2(speed, correction+0.1*Math.signum(correction), true);
+            m_drivetrain.drive2(speed, correction+0.05*Math.signum(correction), true);
         }
     }
 

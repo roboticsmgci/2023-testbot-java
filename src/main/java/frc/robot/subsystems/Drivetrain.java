@@ -50,6 +50,7 @@ public class Drivetrain extends SubsystemBase {
 
         // Inverts one side of the drivetrain
         m_leftLeadMotor.setInverted(true);
+        m_rightLeadMotor.setInverted(true);
         // m_leftFollowMotor.setInverted(true);
 
         // Configures the motors to follow each other

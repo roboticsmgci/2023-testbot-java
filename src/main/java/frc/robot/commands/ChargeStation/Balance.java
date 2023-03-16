@@ -29,9 +29,9 @@ public class Balance extends CommandBase {
     public void execute() {
         m_pitch = m_drivetrain.getPitch();
         if(m_lastPitch-m_pitch>0.5){
-            m_drivetrain.drive(-0.1-m_pitch*0.01, -0.1-m_pitch*0.01);
+            m_drivetrain.drive((-0.1-m_pitch*0.01)/2, (-0.1-m_pitch*0.01)/2);
         }else{
-            m_drivetrain.drive(0.25, 0.25);
+            m_drivetrain.drive(0.125, 0.125);
         }
         m_lastPitch = m_pitch;
     }

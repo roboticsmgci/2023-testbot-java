@@ -16,7 +16,7 @@ public class AutoChargeMove extends SequentialCommandGroup {
         setName("Auto Charge Move");
         addCommands(new MoveOver(drivetrain));
         addCommands(new DriveTime(200, 0, drivetrain));
-        addCommands(new DriveDistance(1, 0.4, drivetrain));
+        addCommands(new DriveDistance(-1, 0.2, drivetrain));
         addCommands(new AutoChargeOnly(drivetrain));
     }
 }

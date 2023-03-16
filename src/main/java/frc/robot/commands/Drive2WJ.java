@@ -13,7 +13,7 @@ import frc.robot.subsystems.Drivetrain;
 public class Drive2WJ extends CommandBase {
     private Joystick m_xbox;
     //private double distance;
-    private double kP = 0.008, kD = 0.001;
+    private double kP = 0.004, kD = 0.0005;
     
     private PDController pd = new PDController(kP, kD);
 
@@ -63,21 +63,21 @@ public class Drive2WJ extends CommandBase {
         correction = pd.calculate(angle, heading);
 
         if(m_xbox.getPOV()==0){
-            m_drivetrain.drive(0.2, 0.2);
+            m_drivetrain.drive(0.08, 0.08);
         } else if(m_xbox.getPOV()==180){
-            m_drivetrain.drive(-0.2, -0.2);
+            m_drivetrain.drive(-0.08, -0.08);
         }
         else if(m_xbox.getPOV()==90){
-            m_drivetrain.drive(0.3, -0.3);
+            m_drivetrain.drive(0.12, -0.12);
         }
         else if(m_xbox.getPOV()==270){
-            m_drivetrain.drive(-0.3, 0.3);
+            m_drivetrain.drive(-0.12, 0.12);
         }
         else if(Math.abs(correction)>0.55){
             speed*=Math.signum(correction);
             m_drivetrain.drive2(0, speed, !brake);
         }else if(brake){
-            m_drivetrain.drive2(0, correction+0.1*Math.signum(correction), false);
+            m_drivetrain.drive2(0, correction+0.05*Math.signum(correction), false);
         }else{
             m_drivetrain.drive2(speed, speed*correction, true);
         }
