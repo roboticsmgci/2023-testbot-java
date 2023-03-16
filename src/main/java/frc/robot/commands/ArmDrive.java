@@ -19,7 +19,7 @@ public class ArmDrive extends CommandBase {
 
     @Override
     public void execute() {
-        m_arm.drive(m_speed.getAsDouble());
+        m_arm.setMotor(m_speed.getAsDouble());
     }
 
     @Override
