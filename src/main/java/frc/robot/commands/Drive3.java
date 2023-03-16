@@ -10,7 +10,7 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
 import frc.robot.subsystems.Drivetrain;
 
-public class Drive2WJ extends CommandBase {
+public class Drive3 extends CommandBase {
     private Joystick m_xbox;
     //private double distance;
     private double kP = 0.008, kD = 0.001;
@@ -19,11 +19,11 @@ public class Drive2WJ extends CommandBase {
 
     private Drivetrain m_drivetrain;
 
-    public Drive2WJ(Joystick xbox, Drivetrain drivetrain) {
+    public Drive3(Joystick xbox, Drivetrain drivetrain) {
         m_xbox = xbox;
         m_drivetrain = drivetrain;
 
-        setName("Drive2WJ");
+        setName("Drive3");
         addRequirements(m_drivetrain);
     }
 
@@ -37,29 +37,15 @@ public class Drive2WJ extends CommandBase {
             m_drivetrain.m_navX.reset();
         }
 
-        double speed = 0.7*Math.max(Math.abs(m_xbox.getRawAxis(0)), Math.abs(m_xbox.getRawAxis(1)));//Math.min(1, Math.hypot(m_xbox.getRawAxis(0), m_xbox.getRawAxis(1)));//filter.calculate(0.9*Math.min(1, m_xbox.getMagnitude()));//Math.hypot(x, y)
+        double speed = -0.7*m_xbox.getRawAxis(1);//Math.min(1, Math.hypot(m_xbox.getRawAxis(0), m_xbox.getRawAxis(1)));//filter.calculate(0.9*Math.min(1, m_xbox.getMagnitude()));//Math.hypot(x, y)
 
-        boolean brake = m_xbox.getRawButton(3);
-
-        double angle = Math.toDegrees(Math.atan2(m_xbox.getRawAxis(0), -m_xbox.getRawAxis(1)));//Math.atan(x, -y)
+        double angle = Math.toDegrees(Math.atan2(m_xbox.getRawAxis(2), -m_xbox.getRawAxis(3)));//Math.atan(x, -y)
 
         m_drivetrain.angle = angle;
 
         double correction = 0;
 
-        double heading = m_drivetrain.m_navX.getAngle()%360;
-
-        if(!m_xbox.getRawButton(1) && Math.abs(heading-angle)>90){
-            speed*=-1;
-            
-            if(heading<0) {
-                heading += 180;
-            }else{
-                heading-=180;
-            }
-        }
-            
-        correction = pd.calculate(angle, heading);
+        correction = pd.calculate(angle, m_drivetrain.m_navX.getAngle()%360);
 
         if(m_xbox.getPOV()==0){
             m_drivetrain.drive(0.2, 0.2);
@@ -71,14 +57,11 @@ public class Drive2WJ extends CommandBase {
         }
         else if(m_xbox.getPOV()==270){
             m_drivetrain.drive(-0.3, 0.3);
+        }else if(m_xbox.getRawButton(7)&&m_xbox.getRawButton(8)){
+            m_drivetrain.drive2(speed, 0.5*m_xbox.getRawAxis(2), true);
         }
-        else if(Math.abs(correction)>0.55){
-            speed*=Math.signum(correction);
-            m_drivetrain.drive2(0, speed, !brake);
-        }else if(brake){
-            m_drivetrain.drive2(0, correction+0.1*Math.signum(correction), false);
-        }else{
-            m_drivetrain.drive2(speed, speed*correction, true);
+        else{
+            m_drivetrain.drive2(speed, correction+0.1*Math.signum(correction), true);
         }
     }
 
