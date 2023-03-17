@@ -12,9 +12,9 @@ public class TurnPID extends CommandBase {
     private double initialAngle;
     private double targetAngle;
 
-    private final double kp = 10;
-    private final double ki = 2;
-    private final double kd = 20;
+    private final double kp = 0.1;
+    private final double ki = 0.02;
+    private final double kd = 0.2;
     private final double error = 2;
     private final double errorD = 5;
 
