@@ -29,7 +29,10 @@ public final class Constants {
         // How many amps the arm motor can use.
         public static final int CURRENT_LIMIT_A = 20;
         // Percent output to run the arm up/down at
-        public static final double OUTPUT_POWER = 0.4;
+        public static final double OUTPUT_POWER = 0.1;
+
+        public static final int EXTEND_BUTTON = 7;
+        public static final int RETRACT_BUTTON = 8;
     }
 
     public static final class IntakeConstants {
@@ -41,5 +44,11 @@ public final class Constants {
         public static final double INTAKE_OUTPUT_POWER = 1.0;
         // Percent output for holding
         public static final double INTAKE_HOLD_POWER = 0.07;
+    }
+
+    public static final class GamePiece {
+        public static final int CONE = 1;
+        public static final int CUBE = 2;
+        public static final int NOTHING = 3;
     }
 }

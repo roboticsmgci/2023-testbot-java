@@ -4,13 +4,18 @@
 
 package frc.robot;
 
+import frc.robot.Constants.ArmConstants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.commands.TankDrive;
+import frc.robot.commands.ArmDrive;
 import frc.robot.commands.Drive2WJ;
 import frc.robot.commands.Drive3;
 import frc.robot.commands.Turn;
+import frc.robot.commands.TurnPID;
 import frc.robot.commands.autonomous.*;
+import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Drivetrain;
+import frc.robot.subsystems.Intake;
 import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
@@ -49,6 +54,8 @@ public class RobotContainer {
     // Propeller m_propeller;
 
     private final Drivetrain m_drivetrain = new Drivetrain();
+    private final Arm m_arm = new Arm();
+    private final Intake m_intake = new Intake();
 
     Joystick m_stick1 = new Joystick(0);
     XboxController m_xbox = new XboxController(0);
@@ -71,7 +78,8 @@ public class RobotContainer {
         SmartDashboard.putData(m_chooser);
 
         m_drivetrain.setDefaultCommand(
-            new Drive3(m_stick1, m_drivetrain)
+            new TankDrive(() -> 0, () -> 0, m_drivetrain)
+            // new Drive3(m_stick1, m_drivetrain)
             //new Drive2WJ(m_stick1, m_drivetrain)
             // new TankDrive(
             //     () -> {
@@ -83,6 +91,8 @@ public class RobotContainer {
             //     m_drivetrain
             // )
         );
+
+        m_arm.setDefaultCommand(new ArmDrive(() -> m_xbox.getRawAxis(0), m_arm));
 
 
 
@@ -194,6 +204,18 @@ public class RobotContainer {
         //     SpinPropeller(m_propeller)
         // );
         //new JoystickButton(m_stick1, DriveConstants.kTurnButton).onTrue(new Turn(90, m_drivetrain));
+        new JoystickButton(m_xbox, ArmConstants.EXTEND_BUTTON)
+            .whileTrue(new ArmDrive(() -> ArmConstants.OUTPUT_POWER, m_arm));
+        new JoystickButton(m_xbox, ArmConstants.RETRACT_BUTTON)
+            .whileTrue(new ArmDrive(() -> -ArmConstants.OUTPUT_POWER, m_arm));
+        new JoystickButton(m_xbox, 4)
+        .onTrue(new TurnPID(180, m_drivetrain));
+            new JoystickButton(m_xbox, 3)
+            .onTrue(new TurnPID(135, m_drivetrain));
+        new JoystickButton(m_xbox, 2)
+            .onTrue(new TurnPID(90, m_drivetrain));
+        new JoystickButton(m_xbox, 1)
+            .onTrue(new TurnPID(45, m_drivetrain));
     }
 
     /**

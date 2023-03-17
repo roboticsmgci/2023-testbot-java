@@ -14,7 +14,7 @@ import frc.robot.Constants.ArmConstants;
 public class Arm extends SubsystemBase {
     public double angle = 0;
 
-    private final CANSparkMax m_motor = new CANSparkMax(5, MotorType.kBrushless);
+    private final CANSparkMax m_motor = new CANSparkMax(6, MotorType.kBrushless);
 
     public RelativeEncoder m_encoder = m_motor.getEncoder();
 
@@ -34,7 +34,7 @@ public class Arm extends SubsystemBase {
         m_encoder.setPosition(0);
 
         // Set conversion ratios
-        //m_leftLeadEncoder.setPositionConversionFactor(0.0443);
+        //m_encoder.setPositionConversionFactor(0.0443);
 
         setName("Arm");
     }

@@ -7,15 +7,20 @@ import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants.GamePiece;
 
 public class Intake extends SubsystemBase {
-    CANSparkMax m_motor = new CANSparkMax(6, MotorType.kBrushless); // port may not be correct
+    CANSparkMax m_motor = new CANSparkMax(5, MotorType.kBrushless); // port may not be correct
     RelativeEncoder m_encoder = m_motor.getEncoder();
+
+    int m_lastGamePiece;
 
     public Intake() {
         m_motor.setInverted(false); // may need to change
         m_motor.setIdleMode(IdleMode.kBrake);
         m_encoder.setPosition(0);
+
+        m_lastGamePiece = GamePiece.NOTHING;
 
         setName("Intake");
     }

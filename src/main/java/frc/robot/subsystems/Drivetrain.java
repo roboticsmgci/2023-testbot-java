@@ -49,7 +49,6 @@ public class Drivetrain extends SubsystemBase {
         m_rightFollowMotor.restoreFactoryDefaults();
 
         // Inverts one side of the drivetrain
-        m_leftLeadMotor.setInverted(true);
         m_rightLeadMotor.setInverted(true);
         // m_leftFollowMotor.setInverted(true);
 
@@ -60,8 +59,10 @@ public class Drivetrain extends SubsystemBase {
         m_robotDrive.setDeadband(0.06);
 
         // Set conversion ratios
-        m_leftLeadEncoder.setPositionConversionFactor(0.0443);
-        m_rightLeadEncoder.setPositionConversionFactor(0.0443);
+        // m_leftLeadEncoder.setPositionConversionFactor(0.0443);
+        // m_rightLeadEncoder.setPositionConversionFactor(0.0443);
+        m_leftLeadEncoder.setPositionConversionFactor(-0.058726117);
+        m_rightLeadEncoder.setPositionConversionFactor(-0.058726117);
 
         m_pitchError = 0;
 
@@ -101,7 +102,7 @@ public class Drivetrain extends SubsystemBase {
         SmartDashboard.putNumber("Pitch", getPitch());
         SmartDashboard.putNumber("r", m_navX.getPitch());
         SmartDashboard.putNumber("target", angle);
-        SmartDashboard.putNumber("l1", m_leftLeadEncoder.getPosition());
+        SmartDashboard.putNumber("l1", m_leftLeadEncoder.getPosition()); // encoders
         SmartDashboard.putNumber("l2", m_rightLeadEncoder.getPosition());
     }
 
