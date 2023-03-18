@@ -15,3 +15,5 @@
 6. RB
 7. BACK
 8. START
+9. Left stick press
+10. Right stick press
