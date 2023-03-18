@@ -10,6 +10,7 @@ import frc.robot.commands.TankDrive;
 import frc.robot.commands.ArmDrive;
 import frc.robot.commands.Drive2WJ;
 import frc.robot.commands.Drive3;
+import frc.robot.commands.IntakeDefault;
 import frc.robot.commands.Turn;
 import frc.robot.commands.TurnPID;
 import frc.robot.commands.autonomous.*;
@@ -92,9 +93,19 @@ public class RobotContainer {
             // )
         );
 
-        m_arm.setDefaultCommand(new ArmDrive(() -> m_xbox.getRawAxis(0), m_arm));
+        m_arm.setDefaultCommand(new ArmDrive(() -> {
+            if (m_xbox.getRawButton(1)) {
+                // raise arm
+                return ArmConstants.OUTPUT_POWER;
+            } else if (m_xbox.getRawButton(2)) {
+                // lower arm
+                return -ArmConstants.OUTPUT_POWER;
+            } else {
+                return 0;
+            }
+        }, m_arm));
 
-
+        m_intake.setDefaultCommand(new IntakeDefault(() -> m_xbox.getRawButton(6), () -> m_xbox.getRawAxis(3) > 0.9, m_intake));
 
         // try{
         //     Socket socket = new Socket("wpilibpi.local", 5801);

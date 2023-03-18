@@ -44,6 +44,9 @@ public final class Constants {
         public static final double INTAKE_OUTPUT_POWER = 1.0;
         // Percent output for holding
         public static final double INTAKE_HOLD_POWER = 0.07;
+
+        public static final int CUBE_IN_BUTTON = 1;
+        public static final int CONE_IN_BUTTON = 2;
     }
 
     public static final class GamePiece {
