@@ -46,4 +46,13 @@ public class IntakeDefault extends CommandBase {
             m_intake.setMotor(0, 0);
         }
     }
+    @Override
+    public boolean isFinished() {
+        return false;
+    }
+
+    @Override
+    public void end(boolean interrupted) {
+        m_intake.setMotor(0, 0);
+    }
 }

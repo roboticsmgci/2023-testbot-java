@@ -54,12 +54,13 @@ public class RobotContainer {
     
     // Propeller m_propeller;
 
-    private final Drivetrain m_drivetrain = new Drivetrain();
+    public final Drivetrain m_drivetrain = new Drivetrain();
     private final Arm m_arm = new Arm();
     private final Intake m_intake = new Intake();
 
     Joystick m_stick1 = new Joystick(0);
     XboxController m_xbox = new XboxController(0);
+    XboxController m_xbox2 = new XboxController(1);
 
     private final SendableChooser<Command> m_chooser = new SendableChooser<>();
 
@@ -79,18 +80,18 @@ public class RobotContainer {
         SmartDashboard.putData(m_chooser);
 
         m_drivetrain.setDefaultCommand(
-            new TankDrive(() -> 0, () -> 0, m_drivetrain)
+            // new TankDrive(() -> 0, () -> 0, m_drivetrain)
             // new Drive3(m_stick1, m_drivetrain)
             //new Drive2WJ(m_stick1, m_drivetrain)
-            // new TankDrive(
-            //     () -> {
-            //         return getLeftSpeed();
-            //     },
-            //     () -> {                
-            //         return getRightSpeed();
-            //     },
-            //     m_drivetrain
-            // )
+            new TankDrive(
+                () -> {
+                    return getLeftSpeed();
+                },
+                () -> {                
+                    return getRightSpeed();
+                },
+                m_drivetrain
+            )
         );
 
         m_arm.setDefaultCommand(new ArmDrive(() -> {
@@ -104,8 +105,17 @@ public class RobotContainer {
                 return 0;
             }
         }, m_arm));
+        // m_arm.setDefaultCommand(new ArmDrive(() -> 0.05, m_arm));
 
-        m_intake.setDefaultCommand(new IntakeDefault(() -> m_xbox.getRawButton(6), () -> m_xbox.getRawAxis(3) > 0.9, m_intake));
+        m_intake.setDefaultCommand(new IntakeDefault(
+            () -> {
+                return m_xbox2.getRawButton(6);
+            },
+            () -> {
+                return m_xbox2.getRawAxis(3) > 0.9;
+            },
+            m_intake
+        ));
 
         // try{
         //     Socket socket = new Socket("wpilibpi.local", 5801);
@@ -151,7 +161,7 @@ public class RobotContainer {
 
         
         //double throttle = (-m_stick1.getThrottle() + 2) / 3; // throttle
-        double throttle = 0.3;
+        double throttle = 0.9;
 
         if(m_xbox.getRawButton(6)){
             throttle = 0.1;
@@ -190,7 +200,7 @@ public class RobotContainer {
 
         
         //double throttle = (-m_stick1.getThrottle() + 2) / 3; // throttle
-        double throttle = 0.3;
+        double throttle = 0.9;
 
         if(m_xbox.getRawButton(6)){
             throttle = 0.1;
@@ -215,18 +225,18 @@ public class RobotContainer {
         //     SpinPropeller(m_propeller)
         // );
         //new JoystickButton(m_stick1, DriveConstants.kTurnButton).onTrue(new Turn(90, m_drivetrain));
-        new JoystickButton(m_xbox, ArmConstants.EXTEND_BUTTON)
-            .whileTrue(new ArmDrive(() -> ArmConstants.OUTPUT_POWER, m_arm));
-        new JoystickButton(m_xbox, ArmConstants.RETRACT_BUTTON)
-            .whileTrue(new ArmDrive(() -> -ArmConstants.OUTPUT_POWER, m_arm));
-        new JoystickButton(m_xbox, 4)
-        .onTrue(new TurnPID(180, m_drivetrain));
-            new JoystickButton(m_xbox, 3)
-            .onTrue(new TurnPID(135, m_drivetrain));
-        new JoystickButton(m_xbox, 2)
-            .onTrue(new TurnPID(90, m_drivetrain));
-        new JoystickButton(m_xbox, 1)
-            .onTrue(new TurnPID(45, m_drivetrain));
+        // new JoystickButton(m_xbox, ArmConstants.EXTEND_BUTTON)
+        //     .whileTrue(new ArmDrive(() -> ArmConstants.OUTPUT_POWER, m_arm));
+        // new JoystickButton(m_xbox, ArmConstants.RETRACT_BUTTON)
+        //     .whileTrue(new ArmDrive(() -> -ArmConstants.OUTPUT_POWER, m_arm));
+        // new JoystickButton(m_xbox, 4)
+        // .onTrue(new TurnPID(180, m_drivetrain));
+        //     new JoystickButton(m_xbox, 3)
+        //     .onTrue(new TurnPID(135, m_drivetrain));
+        // new JoystickButton(m_xbox, 2)
+        //     .onTrue(new TurnPID(90, m_drivetrain));
+        // new JoystickButton(m_xbox, 1)
+        //     .onTrue(new TurnPID(45, m_drivetrain));
     }
 
     /**
