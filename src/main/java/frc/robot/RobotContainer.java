@@ -10,6 +10,7 @@ import frc.robot.commands.TankDrive;
 import frc.robot.commands.ArmDrive;
 import frc.robot.commands.Drive2WJ;
 import frc.robot.commands.Drive3;
+import frc.robot.commands.DriveDistance;
 import frc.robot.commands.IntakeDefault;
 import frc.robot.commands.Turn;
 import frc.robot.commands.TurnPID;
@@ -18,6 +19,7 @@ import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.Intake;
 import edu.wpi.first.cameraserver.CameraServer;
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.Joystick;
@@ -73,38 +75,41 @@ public class RobotContainer {
 
         CameraServer.startAutomaticCapture();
 
-        m_chooser.addOption("Auto move only", new AutoMoveOnly(m_drivetrain));
+        m_chooser.addOption("Auto nothing", new AutoNothing(m_drivetrain));
+        m_chooser.setDefaultOption("Auto move only", new AutoMoveOnly(m_drivetrain));
         m_chooser.addOption("Auto charge only", new AutoChargeOnly(m_drivetrain));
-        m_chooser.setDefaultOption("Auto charge move", new AutoChargeMove(m_drivetrain));
+        // m_chooser.setDefaultOption("Auto charge move", new AutoChargeMove(m_drivetrain));
         
         SmartDashboard.putData(m_chooser);
 
         m_drivetrain.setDefaultCommand(
             // new TankDrive(() -> 0, () -> 0, m_drivetrain)
-            // new Drive3(m_stick1, m_drivetrain)
+            new Drive3(m_stick1, m_drivetrain)
+            // new Drive4(m_stick1, m_drivetrain)
             //new Drive2WJ(m_stick1, m_drivetrain)
-            new TankDrive(
-                () -> {
-                    return getLeftSpeed();
-                },
-                () -> {                
-                    return getRightSpeed();
-                },
-                m_drivetrain
-            )
+            // new TankDrive(
+            //     () -> {
+            //         return getLeftSpeed();
+            //     },
+            //     () -> {                
+            //         return getRightSpeed();
+            //     },
+            //     m_drivetrain
+            // )
+            // new TankDrive()
         );
 
-        m_arm.setDefaultCommand(new ArmDrive(() -> {
-            if (m_xbox.getRawButton(4)) {
-                // raise arm
-                return ArmConstants.OUTPUT_POWER;
-            } else if (m_xbox.getRawButton(1)) {
-                // lower arm
-                return -ArmConstants.OUTPUT_POWER;
-            } else {
-                return 0;
-            }
-        }, m_arm));
+        // m_arm.setDefaultCommand(new ArmDrive(() -> {
+        //     if (m_xbox.getRawButton(4)) {
+        //         // raise arm
+        //         return ArmConstants.OUTPUT_POWER;
+        //     } else if (m_xbox.getRawButton(1)) {
+        //         // lower arm
+        //         return -ArmConstants.OUTPUT_POWER;
+        //     } else {
+        //         return 0;
+        //     }
+        // }, m_arm));
         // m_arm.setDefaultCommand(new ArmDrive(() -> 0.05, m_arm));
 
         m_intake.setDefaultCommand(new IntakeDefault(
@@ -167,8 +172,8 @@ public class RobotContainer {
             throttle = 0.1;
         }
 
-        return -(thrust * (1 - DriveConstants.kTwistMultiplier * Math.abs(twist))
-              + twist * DriveConstants.kTwistMultiplier) * throttle;
+        return -(-(thrust * (1 - DriveConstants.kTwistMultiplier * Math.abs(twist))
+              + twist * DriveConstants.kTwistMultiplier) * throttle);
 
     }
 
@@ -206,8 +211,8 @@ public class RobotContainer {
             throttle = 0.1;
         }
 
-        return -(thrust * (1 - DriveConstants.kTwistMultiplier * Math.abs(twist))
-              - twist * DriveConstants.kTwistMultiplier) * throttle;
+        return -( -(thrust * (1 - DriveConstants.kTwistMultiplier * Math.abs(twist))
+              - twist * DriveConstants.kTwistMultiplier) * throttle);
 
     }
 
@@ -237,6 +242,8 @@ public class RobotContainer {
         //     .onTrue(new TurnPID(90, m_drivetrain));
         // new JoystickButton(m_xbox, 1)
         //     .onTrue(new TurnPID(45, m_drivetrain));
+        new JoystickButton(m_xbox, 2)
+            .onTrue(new DriveDistance(1, 0.2, m_drivetrain));
     }
 
     /**

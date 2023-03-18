@@ -3,10 +3,12 @@ package frc.robot.subsystems;
 import com.kauailabs.navx.frc.AHRS;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
+import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.wpilibj.SerialPort;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -37,8 +39,8 @@ public class Drivetrain extends SubsystemBase {
 
     private SlewRateLimiter m_speedLimiter = new SlewRateLimiter(1);
 
-    private SlewRateLimiter m_brakeLimiter = new SlewRateLimiter(1.5);
-    private SlewRateLimiter m_turnLimiter = new SlewRateLimiter(1.5);
+    private SlewRateLimiter m_brakeLimiter = new SlewRateLimiter(1.8);
+    private SlewRateLimiter m_turnLimiter = new SlewRateLimiter(1.8);
 
     public Drivetrain() {
 
@@ -84,12 +86,12 @@ public class Drivetrain extends SubsystemBase {
     }
 
     public void drive2(double speed, double turn, boolean limit) {
-        if(limit){
-            speed = m_speedLimiter.calculate(speed);
-        }else{
-            speed = m_brakeLimiter.calculate(speed);
-        }
-        turn = m_turnLimiter.calculate(turn);
+        // if(limit){
+        //     speed = m_speedLimiter.calculate(speed);
+        // }else{
+        //     speed = m_brakeLimiter.calculate(speed);
+        // }
+        // turn = m_turnLimiter.calculate(turn);
         drive(speed+turn, speed - turn);
     }
 
@@ -116,5 +118,12 @@ public class Drivetrain extends SubsystemBase {
             m_pitchError = m_navX.getPitch();
         }
         return -(m_navX.getPitch()-m_pitchError);
+    }
+
+    public void setBrakes(IdleMode idleMode) {
+        m_leftLeadMotor.setIdleMode(idleMode);
+        m_rightLeadMotor.setIdleMode(idleMode);
+        m_leftFollowMotor.setIdleMode(idleMode);
+        m_rightFollowMotor.setIdleMode(idleMode);
     }
 }

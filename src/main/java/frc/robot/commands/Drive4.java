@@ -3,6 +3,7 @@ package frc.robot.commands;
 import java.util.function.Supplier;
 
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.wpilibj.XboxController;
@@ -10,20 +11,22 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
 import frc.robot.subsystems.Drivetrain;
 
-public class Drive3 extends CommandBase {
+public class Drive4 extends CommandBase {
     private Joystick m_xbox;
     //private double distance;
-    private double kP = 0.004, kD = 0.000002;
+    private final double kp = 0.008;
+    private final double ki = 0;
+    private final double kd = 0.000002;
     
-    private PDController pd = new PDController(kP, kD);
+    private PIDController pid = new PIDController(kp, ki, kd);
 
     private Drivetrain m_drivetrain;
 
-    public Drive3(Joystick xbox, Drivetrain drivetrain) {
+    public Drive4(Joystick xbox, Drivetrain drivetrain) {
         m_xbox = xbox;
         m_drivetrain = drivetrain;
 
-        setName("Drive3");
+        setName("Drive4");
         addRequirements(m_drivetrain);
     }
 
@@ -43,31 +46,30 @@ public class Drive3 extends CommandBase {
 
         m_drivetrain.angle = angle;
 
-        double correction = 0;
+        double currentGyro = m_drivetrain.m_navX.getAngle();
 
-        correction = pd.calculate(angle, m_drivetrain.m_navX.getAngle()%360);
+        double correction = MathUtil.clamp(pid.calculate(currentGyro, currentGyro + angle), -0.3, 0.3);
 
         if (Math.hypot(m_xbox.getRawAxis(4), m_xbox.getRawAxis(5)) < 0.1) {
             correction = 0;
         }
 
         if(m_xbox.getPOV()==0){
-            m_drivetrain.drive(0.3, 0.3);
+            m_drivetrain.drive(0.12, 0.12);
         } else if(m_xbox.getPOV()==180){
-            m_drivetrain.drive(-0.3, -0.3);
+            m_drivetrain.drive(-0.12, -0.12);
         }
         else if(m_xbox.getPOV()==90){
-            m_drivetrain.drive(0.4, -0.4);
+            m_drivetrain.drive(0.12, -0.12);
         }
         else if(m_xbox.getPOV()==270){
-            m_drivetrain.drive(-0.4, 0.4);
-        }
-        // else if(m_xbox.getRawAxis(2)>0.9&&m_xbox.getRawAxis(3)>0.9){
-        //     m_drivetrain.drive2(speed, correction+0.05*Math.signum(correction), true);
+            m_drivetrain.drive(-0.12, 0.12);
+        }else if(m_xbox.getRawAxis(2)>0.5&&m_xbox.getRawAxis(3)>0.5){
+            m_drivetrain.drive2(speed, correction, true);
            
-        // }
+        }
         else{
-            m_drivetrain.drive2(speed, 0.4*m_xbox.getRawAxis(4), false);
+            m_drivetrain.drive2(speed, 0.25*m_xbox.getRawAxis(4), true);
         }
     }
 

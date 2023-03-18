@@ -4,6 +4,8 @@
 
 package frc.robot;
 
+import com.revrobotics.CANSparkMax.IdleMode;
+
 import edu.wpi.first.net.PortForwarder;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -63,6 +65,7 @@ public class Robot extends TimedRobot {
         m_autonomousCommand = m_robotContainer.getAutonomousCommand();
 
         m_robotContainer.m_drivetrain.m_navX.reset();
+        m_robotContainer.m_drivetrain.setBrakes(IdleMode.kBrake);
 
         // schedule the autonomous command (example)
         if (m_autonomousCommand != null) {
@@ -83,6 +86,7 @@ public class Robot extends TimedRobot {
         if (m_autonomousCommand != null) {
             m_autonomousCommand.cancel();
         }
+        m_robotContainer.m_drivetrain.setBrakes(IdleMode.kCoast);
     }
 
     /** This function is called periodically during operator control. */
