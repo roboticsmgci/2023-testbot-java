@@ -17,3 +17,9 @@
 8. START
 9. Left stick press
 10. Right stick press
+
+## Controls
+RB -> cube intake / cone release
+RT -> cone intake / cube release
+A -> lower arm
+Y -> raise arm

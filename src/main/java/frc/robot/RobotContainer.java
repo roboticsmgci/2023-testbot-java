@@ -94,10 +94,10 @@ public class RobotContainer {
         );
 
         m_arm.setDefaultCommand(new ArmDrive(() -> {
-            if (m_xbox.getRawButton(1)) {
+            if (m_xbox.getRawButton(4)) {
                 // raise arm
                 return ArmConstants.OUTPUT_POWER;
-            } else if (m_xbox.getRawButton(2)) {
+            } else if (m_xbox.getRawButton(1)) {
                 // lower arm
                 return -ArmConstants.OUTPUT_POWER;
             } else {
