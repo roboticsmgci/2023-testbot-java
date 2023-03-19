@@ -76,8 +76,10 @@ public class RobotContainer {
         CameraServer.startAutomaticCapture();
 
         m_chooser.addOption("Auto nothing", new AutoNothing(m_drivetrain));
-        m_chooser.setDefaultOption("Auto move only", new AutoMoveOnly(m_drivetrain));
+        m_chooser.addOption("Auto only move forward", new AutoMoveOnce(m_drivetrain));
+        m_chooser.setDefaultOption("Auto move both ways", new AutoMoveOnly(m_drivetrain));
         m_chooser.addOption("Auto charge only", new AutoChargeOnly(m_drivetrain));
+        m_chooser.addOption("Auto charge move", new AutoChargeMove(m_drivetrain));
         // m_chooser.setDefaultOption("Auto charge move", new AutoChargeMove(m_drivetrain));
         
         SmartDashboard.putData(m_chooser);
@@ -99,22 +101,26 @@ public class RobotContainer {
             // new TankDrive()
         );
 
-        // m_arm.setDefaultCommand(new ArmDrive(() -> {
-        //     if (m_xbox.getRawButton(4)) {
-        //         // raise arm
-        //         return ArmConstants.OUTPUT_POWER;
-        //     } else if (m_xbox.getRawButton(1)) {
-        //         // lower arm
-        //         return -ArmConstants.OUTPUT_POWER;
-        //     } else {
-        //         return 0;
-        //     }
-        // }, m_arm));
+        m_arm.setDefaultCommand(new ArmDrive(() -> {
+            if (m_xbox2.getRawButton(4)) {
+                // raise arm
+                return ArmConstants.OUTPUT_POWER;
+            } else if (m_xbox2.getRawButton(1)) {
+                // lower arm
+                return -ArmConstants.OUTPUT_POWER;
+            } else if (m_xbox2.getRawAxis(2) > 0.9 && m_xbox2.getRawButton(5)) {
+                return 0.9; // TODO: make safer later
+            } else {
+                return 0;
+            }
+            // return 1;
+        }, m_arm));
         // m_arm.setDefaultCommand(new ArmDrive(() -> 0.05, m_arm));
 
         m_intake.setDefaultCommand(new IntakeDrive(
             () -> {
                 return m_xbox2.getRawButton(6);
+                // return true;
                 // return m_xbox2.getRawButton(4);
             },
             () -> {
@@ -244,8 +250,8 @@ public class RobotContainer {
         //     .onTrue(new TurnPID(90, m_drivetrain));
         // new JoystickButton(m_xbox, 1)
         //     .onTrue(new TurnPID(45, m_drivetrain));
-        new JoystickButton(m_xbox, 2)
-            .onTrue(new DriveDistance(1, 0.2, m_drivetrain));
+        // new JoystickButton(m_xbox, 2)
+        //     .onTrue(new DriveDistance(1, 0.2, m_drivetrain));
     }
 
     /**

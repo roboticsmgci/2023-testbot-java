@@ -27,7 +27,7 @@ public class Arm extends SubsystemBase {
         // Restores factory defaults, does not persist
         m_motor.restoreFactoryDefaults();
 
-        m_motor.setInverted(false); // may need to change
+        m_motor.setInverted(true); // may need to change
         m_motor.setIdleMode(IdleMode.kBrake);
         m_motor.setSmartCurrentLimit(ArmConstants.CURRENT_LIMIT_A);
 
