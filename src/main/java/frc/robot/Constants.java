@@ -43,7 +43,7 @@ public final class Constants {
         // Percent output for intaking
         public static final double INTAKE_OUTPUT_POWER = 0.5;
         // Percent output for holding
-        public static final double INTAKE_HOLD_POWER = 0.07;
+        public static final double INTAKE_HOLD_POWER = 0.035;
 
         public static final int CUBE_IN_BUTTON = 1;
         public static final int CONE_IN_BUTTON = 2;

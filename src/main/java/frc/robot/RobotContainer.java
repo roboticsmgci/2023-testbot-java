@@ -11,7 +11,7 @@ import frc.robot.commands.ArmDrive;
 import frc.robot.commands.Drive2WJ;
 import frc.robot.commands.Drive3;
 import frc.robot.commands.DriveDistance;
-import frc.robot.commands.IntakeDefault;
+import frc.robot.commands.IntakeDrive;
 import frc.robot.commands.Turn;
 import frc.robot.commands.TurnPID;
 import frc.robot.commands.autonomous.*;
@@ -84,18 +84,18 @@ public class RobotContainer {
 
         m_drivetrain.setDefaultCommand(
             // new TankDrive(() -> 0, () -> 0, m_drivetrain)
-            new Drive3(m_stick1, m_drivetrain)
+            // new Drive3(m_stick1, m_drivetrain)
             // new Drive4(m_stick1, m_drivetrain)
             //new Drive2WJ(m_stick1, m_drivetrain)
-            // new TankDrive(
-            //     () -> {
-            //         return getLeftSpeed();
-            //     },
-            //     () -> {                
-            //         return getRightSpeed();
-            //     },
-            //     m_drivetrain
-            // )
+            new TankDrive(
+                () -> {
+                    return getLeftSpeed();
+                },
+                () -> {                
+                    return getRightSpeed();
+                },
+                m_drivetrain
+            )
             // new TankDrive()
         );
 
@@ -112,12 +112,14 @@ public class RobotContainer {
         // }, m_arm));
         // m_arm.setDefaultCommand(new ArmDrive(() -> 0.05, m_arm));
 
-        m_intake.setDefaultCommand(new IntakeDefault(
+        m_intake.setDefaultCommand(new IntakeDrive(
             () -> {
                 return m_xbox2.getRawButton(6);
+                // return m_xbox2.getRawButton(4);
             },
             () -> {
                 return m_xbox2.getRawAxis(3) > 0.9;
+                // return m_xbox2.getRawAxis(2) > 0.9;
             },
             m_intake
         ));
@@ -169,7 +171,7 @@ public class RobotContainer {
         double throttle = 0.9;
 
         if(m_xbox.getRawButton(6)){
-            throttle = 0.1;
+            throttle = 0.2;
         }
 
         return -(-(thrust * (1 - DriveConstants.kTwistMultiplier * Math.abs(twist))
@@ -208,7 +210,7 @@ public class RobotContainer {
         double throttle = 0.9;
 
         if(m_xbox.getRawButton(6)){
-            throttle = 0.1;
+            throttle = 0.2;
         }
 
         return -( -(thrust * (1 - DriveConstants.kTwistMultiplier * Math.abs(twist))

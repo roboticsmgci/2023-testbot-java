@@ -7,19 +7,19 @@ import frc.robot.Constants.GamePiece;
 import frc.robot.Constants.IntakeConstants;
 import frc.robot.subsystems.Intake;
 
-public class IntakeDefault extends CommandBase {
+public class IntakeDrive extends CommandBase {
     private final BooleanSupplier m_cubeIn;
     private final BooleanSupplier m_coneIn;
     private final Intake m_intake;
 
     int lastGamePiece;
 
-    public IntakeDefault(BooleanSupplier cubeIn, BooleanSupplier coneIn, Intake intake) {
+    public IntakeDrive(BooleanSupplier cubeIn, BooleanSupplier coneIn, Intake intake) {
         m_cubeIn = cubeIn;
         m_coneIn = coneIn;
         m_intake = intake;
         
-        setName("IntakeDefault");
+        setName("IntakeDrive");
         addRequirements(m_intake);
     }
 

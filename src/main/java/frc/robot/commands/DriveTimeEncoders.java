@@ -53,9 +53,6 @@ public class DriveTimeEncoders extends CommandBase {
 
     @Override
     public boolean isFinished() {
-        // m_distanceCounter = (- m_drivetrain.m_leftLeadEncoder.getPosition() 
-        //                      + m_drivetrain.m_rightLeadEncoder.getPosition())
-        //                     / 2;
         return m_time>=m_ms;
     }
   

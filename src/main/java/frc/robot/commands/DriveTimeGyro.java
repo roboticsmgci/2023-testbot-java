@@ -40,9 +40,6 @@ public class DriveTimeGyro extends CommandBase {
     public void initialize() {
         m_drivetrain.drive(0, 0);
         pid.setSetpoint(m_drivetrain.m_navX.getAngle());
-        // m_drivetrain.m_leftLeadEncoder.setPosition(0);
-        // m_drivetrain.m_rightLeadEncoder.setPosition(0);
-        //m_drivetrain.m_Encoder.setPosition(0);
     }
 
     @Override
@@ -54,9 +51,6 @@ public class DriveTimeGyro extends CommandBase {
 
     @Override
     public boolean isFinished() {
-        // m_distanceCounter = (- m_drivetrain.m_leftLeadEncoder.getPosition() 
-        //                      + m_drivetrain.m_rightLeadEncoder.getPosition())
-        //                     / 2;
         return m_time>=m_ms;
     }
   
