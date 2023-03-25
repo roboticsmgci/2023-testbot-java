@@ -63,41 +63,30 @@ public class RobotContainer {
      * The container for the robot. Contains subsystems, OI devices, and commands.
      */
     public RobotContainer() {
-        // Configure the trigger bindings
         configureBindings();
 
-        // m_chooser.setDefaultOption("Auto1", new Autonomous(m_drivetrain));
-        // m_chooser.addOption("Auto2", new AutoChargeOnly(m_drivetrain));
-        // m_chooser.addOption("Auto3", new AutoWithPreload(m_drivetrain));
         m_chooser.setDefaultOption("Auto4", new AutoChargeMove(m_drivetrain));
 
         SmartDashboard.putData(m_chooser);
 
         m_drivetrain.setDefaultCommand(
-                // new Drive2(m_stick1, m_drivetrain)
-                // new Drive2X(m_xbox, m_drivetrain)
-                // new Drive2W(m_xbox, m_drivetrain)
                 new Drive2WJ(m_stick1, m_drivetrain)
-        // new TankDrive(
-        // () -> {
-        // return getLeftSpeed();
-        // },
-        // () -> {
-        // return getRightSpeed();
-        // },
-        // m_drivetrain
-        // )
         );
 
         try {
+            /**
+             * Note: this is a blocking operation
+             * disconnection happens when either side ends connection
+             */
+
             Socket socket = new Socket("10.85.74.71", 5801);
 			BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 			PrintWriter pw = new PrintWriter(socket.getOutputStream(), true);
 			
 			System.out.println(1);
-			String userInput;
-			while((userInput = in.readLine()) != null) {
-                SmartDashboard.putString("SOCKET_DATA", userInput);
+			String socketData;
+			while((socketData = in.readLine()) != null) {
+                SmartDashboard.putString("SOCKET_DATA", socketData);
 			}
             
         } catch (Exception e) {
