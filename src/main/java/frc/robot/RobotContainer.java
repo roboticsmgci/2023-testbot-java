@@ -81,9 +81,7 @@ public class RobotContainer {
 
             Socket socket = new Socket("10.85.74.71", 5801);
 			BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-			PrintWriter pw = new PrintWriter(socket.getOutputStream(), true);
 			
-			System.out.println(1);
 			String socketData;
 			while((socketData = in.readLine()) != null) {
                 SmartDashboard.putString("SOCKET_DATA", socketData);
